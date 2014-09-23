@@ -1,6 +1,7 @@
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction')
 trainingdata <- read.csv('data/training.csv')
 testdata <- read.csv('data/sorted_test.csv')
+require(BayesTree)
 
 soil_properties <- c("Ca", "P", "pH", "SOC", "Sand")
 
