@@ -8,11 +8,13 @@ test <- read.csv('data/sorted_test.csv', stringsAsFactor=F)
 dim(train)
 # set y
 y <- c('Ca', 'P', 'pH', 'SOC', 'Sand')
-cate <- c('Depth', 'BSA', 'CTI', 'ELEV', 'EVI', 'LST', 'Ref', 'Reli', 'TMAP')
 head(train[,y])
 # pca 
 train <- train[,-1]
-train_pca <- preProcess(train, method='pca',pcaComp = 2)
+col.index <- sapply(train[1,], is.numeric)
+train_num <- train[,col.index]
+train_pca <- prcomp(train_num)
+plot(train_pca)
 
 ##### split datasets #####
 index <- createDataPartition(y = c(train$Ca, train$P, train$pH, train$SOC, train$Sand), p=.8, list=F)
