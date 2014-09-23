@@ -13,7 +13,7 @@ head(train[,y])
 train <- train[,-1]
 col.index <- sapply(train[1,], is.numeric)
 train_num <- train[,col.index]
-train_pca <- prcomp(train_num)
+train_pca <- prcomp(train_num, )
 plot(train_pca)
 
 ##### split datasets #####
@@ -22,7 +22,7 @@ train_train <- train[index,]
 train_test <- train[-index,]
 
 ##### test model #####
-fit1 <- train(Ca~., data=train_train, method='rpart')
+fit1 <- train(Ca~., data=train_train, method='gbm')
 
 ##### prediction and valuation #####
 pred1 <- predict(fit1, train_test)
