@@ -17,9 +17,11 @@ train_pca <- prcomp(train_num, )
 plot(train_pca)
 
 ##### split datasets #####
-index <- createDataPartition(y = c(train$Ca, train$P, train$pH, train$SOC, train$Sand), p=.8, list=F)
+index <- createDataPartition(y = train$Ca, p=.8, list=F)
 train_train <- train[index,]
 train_test <- train[-index,]
+dim(train_train)
+dim(train_test)
 
 ##### test model #####
 fit1 <- train(Ca~., data=train_train, method='gbm')
