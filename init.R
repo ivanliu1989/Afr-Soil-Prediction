@@ -29,8 +29,8 @@ dim(train_Ca_test)
 
 ##### GMM #####
 z <- as.matrix(train_Ca_train[, 1:3594])
-zm <- matrix(train_Ca_train[,3595], nrow(z), 1)
-res <- gmm(z ~ zm, x = h)
+zm <- as.matrix(train_Ca_train[,3595])
+res <- gmm(z ~ zm, x = as.matrix(train_Ca_train))
 
 ##### test model #####
 cvControl <- trainControl(method="repeatedcv", number=10, repeats=5,
