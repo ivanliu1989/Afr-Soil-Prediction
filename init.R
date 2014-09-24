@@ -27,6 +27,11 @@ train_Ca_test <- train_Ca[-index,]
 dim(train_Ca_train)
 dim(train_Ca_test)
 
+##### GMM #####
+z <- as.matrix(train_Ca_train[, 1:3594])
+zm <- matrix(train_Ca_train[,3595], nrow(z), 1)
+res <- gmm(z ~ zm, x = h)
+
 ##### test model #####
 cvControl <- trainControl(method="repeatedcv", number=10, repeats=5,
                           classProbs = F, allowParallel = TRUE)
@@ -36,8 +41,8 @@ fit_Ca <- train(Ca~., data=train_Ca_train, method='gbm',
                 trControl=cvControl, tuneGrid=Grid,
                 preProcess = c('center','scale', 'pca'))
 pred_Ca_t <- predict(fit_Ca, train_Ca_train)
-RMSE(pred_Ca_t,train_Ca_train$Ca)
+RMSE(pred_Ca_t,train_Ca_train$Ca) ## 0.1350805
 
 ##### prediction and valuation #####
 pred_Ca <- predict(fit_Ca, train_Ca_test)
-RMSE(pred_Ca,train_Ca_test$Ca)
+RMSE(pred_Ca,train_Ca_test$Ca) ## 0.4329083
