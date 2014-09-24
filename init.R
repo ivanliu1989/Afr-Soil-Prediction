@@ -9,24 +9,28 @@ dim(train)
 # set y
 y <- c('Ca', 'P', 'pH', 'SOC', 'Sand')
 head(train[,y])
-# pca 
+# pca
+train_y <- train[,y]
 train <- train[,-1]
-col.index <- sapply(train[1,], is.numeric)
-train_num <- train[,col.index]
-train_pca <- prcomp(train_num, )
-plot(train_pca)
+train <- train[,-which(names(train) %in% y)]
+    col.index <- sapply(train[1,], is.numeric)
+    train_num <- train[,col.index]
+    train_pca <- prcomp(train_num, )
+    plot(train_pca)
 
-##### split datasets #####
-index <- createDataPartition(y = train$Ca, p=.8, list=F)
-train_train <- train[index,]
-train_test <- train[-index,]
-dim(train_train)
-dim(train_test)
+##### CA: split datasets #####
+train_Ca <- train
+train_Ca$Ca <- train_y[,'Ca']
+index <- createDataPartition(y = train_Ca$Ca, p=.8, list=F)
+train_Ca_train <- train_Ca[index,]
+train_Ca_test <- train_Ca[-index,]
+dim(train_Ca_train)
+dim(train_Ca_test)
 
 ##### test model #####
-fit1 <- train(Ca~., data=train_train, method='gbm')
+fit_Ca <- train(Ca~., data=train_Ca_train, method='glm')
 
 ##### prediction and valuation #####
-pred1 <- predict(fit1, train_test)
-confusionMatrix(pred1, train_test$Ca)
-imp <- varImp(fit1)
+pred_Ca <- predict(fit_Ca, train_test)
+confusionMatrix(pred_Ca, train_Ca_test$Ca)
+imp <- varImp(pred_Ca)
