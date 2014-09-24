@@ -28,9 +28,16 @@ dim(train_Ca_train)
 dim(train_Ca_test)
 
 ##### test model #####
-fit_Ca <- train(Ca~., data=train_Ca_train, method='glm')
+cvControl <- trainControl(method="repeatedcv", number=10, repeats=5,
+                          classProbs = F, allowParallel = TRUE)
+Grid <-expand.grid(n.trees=c(500,1000,1500),shrinkage=.1,
+                   interaction.depth=c(5,10,15))
+fit_Ca <- train(Ca~., data=train_Ca_train, method='gbm', 
+                trControl=cvControl, tuneGrid=Grid,
+                preProcess = c('center','scale', 'pca'))
+pred_Ca_t <- predict(fit_Ca, train_Ca_train)
+RMSE(pred_Ca_t,train_Ca_train$Ca)
 
 ##### prediction and valuation #####
-pred_Ca <- predict(fit_Ca, train_test)
-confusionMatrix(pred_Ca, train_Ca_test$Ca)
-imp <- varImp(pred_Ca)
+pred_Ca <- predict(fit_Ca, train_Ca_test)
+RMSE(pred_Ca,train_Ca_test$Ca)
