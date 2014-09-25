@@ -1,8 +1,8 @@
 ###########
 ## setup ##
 ###########
-setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
-library(caret)
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction')
+library(caret); library(doMC)
 train <- read.csv('data/training.csv', stringsAsFactor=F)
 test <- read.csv('data/sorted_test.csv', stringsAsFactor=F)
 dim(train)
@@ -42,7 +42,7 @@ test <- as.data.frame(pca$x[1158:1884,])
 #######################
 ## Feature Selection ##
 #######################
-# registerDoMC(10)
+registerDoMC(10)
 rfeFuncs <- rfFuncs
 rfeFuncs$summary <- defaultSummary
 # rfeFuncs$fit
