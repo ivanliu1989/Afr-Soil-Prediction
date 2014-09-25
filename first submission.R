@@ -43,9 +43,11 @@ test <- as.data.frame(pca$x[1158:1884,])
 ## Feature Selection ##
 #######################
 # registerDoMC(10)
-# rfeFuncs <- rfFuncs
-# rfeFuncs$summary <- twoClassSummary
-rfe.control <- rfeControl(rfFuncs, method = "repeatedcv", number=10 ,
+rfeFuncs <- rfFuncs
+rfeFuncs$summary <- defaultSummary
+# rfeFuncs$fit
+# within10Pct <- pickSizeTolerance(example, metric = "RMSE", tol = 10, maximize = FALSE)
+rfe.control <- rfeControl(rfeFuncs, method = "repeatedcv", number=10 ,
                           repeats = 5, verbose = T, returnResamp = "final")
 rfe.rf.Ca <- rfe(train_Ca[,-1], train_Ca[,1], sizes = 188:1884, 
                  rfeControl = rfe.control)
