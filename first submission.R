@@ -37,7 +37,9 @@ names(train_pH)[1] <- y[3]
 names(train_SOC)[1] <- y[4]
 names(train_Sand)[1] <- y[5]
 test <- as.data.frame(pca$x[1158:1884,])
-# save(train_Ca,train_P,train_pH,train_SOC,train_Sand,test,file="data/2_pcaData.RData")
+# save cleaned dataset
+save(train_Ca,train_P,train_pH,train_SOC,train_Sand,test,total_PIDN,
+     total_cat,file="data/CleanedDataForFeatureEngineering.RData")
 
 #######################
 ## Feature Selection ##
@@ -45,17 +47,30 @@ test <- as.data.frame(pca$x[1158:1884,])
 registerDoMC(10)
 rfeFuncs <- rfFuncs
 rfeFuncs$summary <- defaultSummary
-# rfeFuncs$fit
-# within10Pct <- pickSizeTolerance(example, metric = "RMSE", tol = 10, maximize = FALSE)
 rfe.control <- rfeControl(rfeFuncs, method = "repeatedcv", number=10 ,
                           repeats = 5, verbose = T, returnResamp = "final")
+
 rfe.rf.Ca <- rfe(train_Ca[,-1], train_Ca[,1], sizes = 188:1884, 
-                 rfeControl = rfe.control)
+                 rfeControl = rfe.control, metric='RMSE')
+#     predictors(rfe.rf.Ca)
+#     rfe.rf.Ca$fit
+#     head(rfe.rf.Ca$resample)
+#     trellis.par.set(caretTheme())
+#     plot(rfe.rf.Ca, type = c("g", "o"))
+#     within10Pct <- pickSizeTolerance(rfe.rf.Ca, metric = "RMSE", tol = 10, maximize = FALSE)
+#     rfe.rf.Ca$selectVar
+#     trellis.par.set(caretTheme())
+#     plot1 <- plot(rfe.rf.Ca, type = c("g", "o"))
+#     plot2 <- plot(rfe.rf.Ca, type = c("g", "o"), metric = "Rsquared")
+#     print(plot1, split=c(1,1,1,2), more=TRUE)
+#     print(plot2, split=c(1,2,1,2))
+
+
 rfe.rf.P <- rfe(train_P[,-1], train_P[,1], sizes = 188:1884, 
-                rfeControl = rfe.control,metric="ROC")
+                rfeControl = rfe.control,metric="RMSE")
 rfe.rf.pH <- rfe(train_pH[,-1], train_pH[,1], sizes = 188:1884, 
-                 rfeControl = rfe.control,metric="ROC")
+                 rfeControl = rfe.control,metric="RMSE")
 rfe.rf.SOC <- rfe(train_SOC[,-1], train_SOC[,1], sizes = 188:1884, 
-                  rfeControl = rfe.control,metric="ROC")
+                  rfeControl = rfe.control,metric="RMSE")
 rfe.rf.Sand <- rfe(train_Sand[,-1], train_Sand[,1], sizes = 188:1884, 
-                   rfeControl = rfe.control,metric="ROC")
+                   rfeControl = rfe.control,metric="RMSE")
