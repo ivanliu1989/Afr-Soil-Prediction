@@ -78,16 +78,16 @@ rfe.rf.Sand <- rfe(train_Sand[,-1], train_Sand[,1], sizes = 188:1884,
 ########################
 ## Save Prepared Data ##
 ########################
-train_Ca <- train_Ca[,c("Ca",predictors(rfe.rf.Ca))]
-train_P <- train_Ca[,c("P",predictors(rfe.rf.P))]
-train_pH <- train_Ca[,c("pH",predictors(rfe.rf.pH))]
-train_SOC <- train_Ca[,c("SOC",predictors(rfe.rf.SOC))]
-train_Sand <- train_Ca[,c("Sand",predictors(rfe.rf.Sand))]
-test_Ca <- test[,predictors(rfe.rf.Ca)]
-test_P <- test[,predictors(rfe.rf.P)]
-test_pH <- test[,predictors(rfe.rf.pH)]
-test_SOC <- test[,predictors(rfe.rf.SOC)]
-test_Sand <- test[,predictors(rfe.rf.Sand)]
+train_Ca <- cbind(train_Ca[,c("Ca",predictors(rfe.rf.Ca))], total_cat[1:1157])
+train_P <- cbind(train_Ca[,c("P",predictors(rfe.rf.P))], total_cat[1:1157])
+train_pH <- cbind(train_Ca[,c("pH",predictors(rfe.rf.pH))], total_cat[1:1157])
+train_SOC <- cbind(train_Ca[,c("SOC",predictors(rfe.rf.SOC))], total_cat[1:1157])
+train_Sand <- cbind(train_Ca[,c("Sand",predictors(rfe.rf.Sand))], total_cat[1:1157])
+test_Ca <- cbind(test[,predictors(rfe.rf.Ca)], total_cat[1158:1884])
+test_P <- cbind(test[,predictors(rfe.rf.P)], total_cat[1158:1884])
+test_pH <- cbind(test[,predictors(rfe.rf.pH)], total_cat[1158:1884])
+test_SOC <- cbind(test[,predictors(rfe.rf.SOC)], total_cat[1158:1884])
+test_Sand <- cbind(test[,predictors(rfe.rf.Sand)], total_cat[1158:1884])
 save(train_Ca,train_P,train_pH,train_SOC,train_Sand,
      test_Ca,test_P,test_pH,test_SOC,test_Sand,file="Data/DataAfterFeatureEngineer.RData")
 
