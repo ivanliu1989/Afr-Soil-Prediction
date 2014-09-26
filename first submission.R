@@ -74,3 +74,29 @@ rfe.rf.SOC <- rfe(train_SOC[,-1], train_SOC[,1], sizes = 188:1884,
                   rfeControl = rfe.control,metric="RMSE")
 rfe.rf.Sand <- rfe(train_Sand[,-1], train_Sand[,1], sizes = 188:1884, 
                    rfeControl = rfe.control,metric="RMSE")
+
+########################
+## Save Prepared Data ##
+########################
+train_Ca <- train_Ca[,c("Ca",predictors(rfe.rf.Ca))]
+train_P <- train_Ca[,c("P",predictors(rfe.rf.P))]
+train_pH <- train_Ca[,c("pH",predictors(rfe.rf.pH))]
+train_SOC <- train_Ca[,c("SOC",predictors(rfe.rf.SOC))]
+train_Sand <- train_Ca[,c("Sand",predictors(rfe.rf.Sand))]
+test_Ca <- test[,predictors(rfe.rf.Ca)]
+test_P <- test[,predictors(rfe.rf.P)]
+test_pH <- test[,predictors(rfe.rf.pH)]
+test_SOC <- test[,predictors(rfe.rf.SOC)]
+test_Sand <- test[,predictors(rfe.rf.Sand)]
+save(train_Ca,train_P,train_pH,train_SOC,train_Sand,
+     test_Ca,test_P,test_pH,test_SOC,test_Sand,file="Data/DataAfterFeatureEngineer.RData")
+
+##################
+## Build Models ##
+##################
+
+
+
+#########################
+## Generate Submission ##
+#########################
