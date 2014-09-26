@@ -1,7 +1,7 @@
 ###########
 ## setup ##
 ###########
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 library(caret); library(doMC)
 train <- read.csv('data/training.csv', stringsAsFactor=F)
 test <- read.csv('data/sorted_test.csv', stringsAsFactor=F)
@@ -48,10 +48,10 @@ load("data/CleanedDataForFeatureEngineering.RData")
 registerDoMC(10)
 rfeFuncs <- rfFuncs
 rfeFuncs$summary <- defaultSummary
-rfe.control <- rfeControl(rfeFuncs, method = "repeatedcv", number=10 ,
-                          repeats = 5, verbose = T, returnResamp = "final")
+rfe.control <- rfeControl(rfeFuncs, method = "repeatedcv", number=5 ,
+                          repeats = 3, verbose = T, returnResamp = "final")
 
-rfe.rf.Ca <- rfe(train_Ca[,-1], train_Ca[,1], sizes = 188:1884, 
+rfe.rf.Ca <- rfe(train_Ca[,-1], train_Ca[,1], sizes = 500:1884, 
                  rfeControl = rfe.control, metric='RMSE')
 #     predictors(rfe.rf.Ca)
 #     rfe.rf.Ca$fit
@@ -95,8 +95,14 @@ save(train_Ca,train_P,train_pH,train_SOC,train_Sand,
 ##################
 ## Build Models ##
 ##################
-
-
+pre <- preProcess(train_Ca)
+train_Ca <- cbind(train_Ca, as.factor(total_cat[1:1157]))
+split_index <- createDataPartition(train_Ca$Ca, p=0.8, list=F)
+train_Ca_train <- train_Ca[split_index,]
+train_Ca_test <- train_Ca[-split_index,]
+Grid <- expand.grid(n.trees=c(500,1000,1500),shrinkage=c(0.1,0.2),interaction.depth=c(5,10,15)) 
+fitControl <- trainControl(method="repeatedcv",10,10, summaryFunction = defaultSummary)
+fit <- train(Ca~., data=train_Ca_train, method='gbm', verbose=T, metric='RMSE')
 
 #########################
 ## Generate Submission ##
