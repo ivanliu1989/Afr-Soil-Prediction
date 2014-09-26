@@ -44,6 +44,7 @@ save(train_Ca,train_P,train_pH,train_SOC,train_Sand,test,total_PIDN,
 #######################
 ## Feature Selection ##
 #######################
+load("data/CleanedDataForFeatureEngineering.RData")
 registerDoMC(10)
 rfeFuncs <- rfFuncs
 rfeFuncs$summary <- defaultSummary
