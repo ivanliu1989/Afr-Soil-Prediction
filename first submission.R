@@ -100,9 +100,11 @@ train_Ca <- cbind(train_Ca, as.factor(total_cat[1:1157]))
 split_index <- createDataPartition(train_Ca$Ca, p=0.8, list=F)
 train_Ca_train <- train_Ca[split_index,]
 train_Ca_test <- train_Ca[-split_index,]
-Grid <- expand.grid(n.trees=c(500,1000,1500),shrinkage=c(0.1,0.2),interaction.depth=c(5,10,15)) 
+Grid <- expand.grid(n.trees=c(1000,1500,2000),shrinkage=c(0.001),interaction.depth=c(5,15,30)) 
 fitControl <- trainControl(method="repeatedcv",10,10, summaryFunction = defaultSummary)
-fit <- train(Ca~., data=train_Ca_train, method='gbm', verbose=T, metric='RMSE')
+fit <- train(Ca~., data=train_Ca_train, method='rf', verbose=T, metric='RMSE')
+pred <- predict(fit, train_Ca_train)
+confusionMatrix(pred, train_Ca_train$Ca)
 
 #########################
 ## Generate Submission ##
