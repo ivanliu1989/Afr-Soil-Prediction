@@ -1,7 +1,8 @@
+setwd("C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction")
 library(e1071)
 
-train <- read.csv("./training.csv",header=TRUE,stringsAsFactors=FALSE)
-test <- read.csv("./sorted_test.csv",header=TRUE,stringsAsFactors=FALSE)
+train <- read.csv("Data/training.csv",header=TRUE,stringsAsFactors=FALSE)
+test <- read.csv("Data/sorted_test.csv",header=TRUE,stringsAsFactors=FALSE)
 
 submission <- test[,1]
 
@@ -22,4 +23,4 @@ predictions <- sapply(svms,predict,newdata=test)
 colnames(predictions) <- c("Ca","P","pH","SOC","Sand")
 submission <- cbind(PIDN=submission,predictions)
 
-write.csv(submission,"beating_benchmark2.0.csv",row.names=FALSE,quote=FALSE)
+write.csv(submission,"r_first_try.csv",row.names=FALSE,quote=FALSE)
