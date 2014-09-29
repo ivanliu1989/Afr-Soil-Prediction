@@ -40,8 +40,10 @@ fit_Ca_svm <- train(Ca~., data=train_Ca,
                 metric='RMSE')
 trellis.par.set(caretTheme())
 plot(fit_Ca)
+png('fit_Ca_svm.png')
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
+dev.off()
 Ca <- predict(fit_Ca_svm, test)
 submit_Ca <- cbind(ID, Ca)
 ###############
@@ -99,4 +101,4 @@ submit_Final <- cbind(submit_SOC, Sand)
 
 
 
-write.csv(submit_Final, 'Third_try_not_optimal.csv',row.names=F)
+write.csv(submit_Final, 'Third_try_not_optimal_MAC_version.csv',row.names=F)
