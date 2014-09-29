@@ -168,3 +168,20 @@ submit_Final <- cbind(submit_SOC, Sand)
 #################################
 save(fit_Ca_svmPoly,file='models_2.RData')
 write.csv(submit_Final, 'Third_try_not_optimal_MAC_version.csv',row.names=F)
+
+######################
+## PCA analysis (P) ##
+######################
+prePCA <- preProcess(train_P[,-c(1,3580)], method='pca')
+PCA_P <- predict(prePCA, train_P[,-c(1,3580)])
+train_P_pca <- cbind(P=train_P[,1], PCA_P, Depth=train_P$Depth)
+head(train_P_pca)
+png('train_P_pca.png')
+par(mfcol = c(2,3))
+plot(train_P_pca$P, train_P_pca$PC1)
+plot(train_P_pca$P, train_P_pca$PC2)
+plot(train_P_pca$P, train_P_pca$PC3)
+plot(train_P_pca$P, train_P_pca$PC4)
+plot(train_P_pca$P, train_P_pca$PC5)
+plot(train_P_pca$P, train_P_pca$Depth)
+dev.off()
