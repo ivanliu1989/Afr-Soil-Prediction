@@ -25,7 +25,7 @@ colnames(ID)[1]<-"PIDN"
 ## Parallel computing ##
 ########################
 library(doMC)
-registerDoMC(cores = 5)
+registerDoMC(cores = 2)
 
 ############################
 ## Model control & tuning ##
@@ -167,6 +167,7 @@ submit_Final <- cbind(submit_SOC, Sand)
 ## Save models and predictions ##
 #################################
 save(fit_Ca_svmPoly,file='models_2.RData')
+# fit_P_gamboost,fit_P_avNNet,fit_P_ridge,fit_P_lasso,fit_P_glmnet
 write.csv(submit_Final, 'Third_try_not_optimal_MAC_version.csv',row.names=F)
 
 ######################
