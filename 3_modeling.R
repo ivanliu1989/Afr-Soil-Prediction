@@ -57,6 +57,10 @@ fit_P_svm <- train(P~., data=train_P,
                    # tuneGrid = Grid,
                     verbose=T, 
                     metric='RMSE')
+png('fit_P_gbm.png')
+trellis.par.set(caretTheme())
+plot(fit_P_svm)
+dev.off()
 P <- predict(fit_P_svm, test)
 submit_P <- cbind(submit_Ca, P)
 ################
@@ -100,5 +104,5 @@ Sand <- predict(fit_Sand_svm, test)
 submit_Final <- cbind(submit_SOC, Sand)
 
 
-
+save(fit_Ca_svm,fit_P_gbm,fit_pH_svm,fit_SOC_svm,fit_Sand_svm,file='models_2.RData')
 write.csv(submit_Final, 'Third_try_not_optimal_MAC_version.csv',row.names=F)
