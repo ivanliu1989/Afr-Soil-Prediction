@@ -4,7 +4,7 @@ load('data/1_data_split.RData')
 dim(test);dim(train_Ca);dim(train_P);dim(train_SOC);dim(train_Sand);dim(train_pH)
 training <- train_Ca[,-c(3579,3580)]
 testing <- test[,-c(1,3580)]
-total.data <- rbind(training,testing)
+# total.data <- rbind(training,testing)
 
 histogram(train_Ca$Ca)
 histogram(train_P$P)
