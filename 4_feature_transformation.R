@@ -57,25 +57,25 @@ test <- test[,-3580]
 #################
 ## Yeo-Johnson ##
 #################
-yj_Trans <- preProcess(train_P[,-c(1)], method='YeoJohnson')
-train_P_YJ <- predict(yj_Trans, train_P[,-c(1)])
-train_P_YJ <- cbind(P=train_P[,1], train_P_YJ)
-test_P_YJ <- predict(yj_Trans, newdata=test[,-c(1)])
-test_P_YJ <- cbind(PIDN=test[,1], test_P_YJ)
+yj_Data <- rbind(train_P[,-1], test[,-1])
+yj_Trans <- preProcess(yj_Data, method='YeoJohnson')
+data_P_YJ <- predict(yj_Trans, yj_Data)
+train_P_YJ <- cbind(P=train_P[,1], data_P_YJ[1:1157,])
+test_P_YJ <- cbind(PIDN=test[,1], data_P_YJ[1158:1884,])
 dim(test_P_YJ); dim(train_P_YJ)
 
 ################################
 ## Exponential transformation ##
 ################################
-exp_Trans <- preProcess(train_P[,-c(1,3580)], method='expoTrans')
-train_P_XT <- predict(exp_Trans, train_P[,-c(1,3580)])
-train_P_XT <- cbind(P=train_P[,1], train_P_XT, Depth=train_P[,3580])
-test_P_XT <- predict(exp_Trans, newdata=test[,-c(1,3580)])
-test_P_XT <- cbind(PIDN=test[,1], test_P_XT, Depth=test[,3580])
+exp_Data <- rbind(train_P[,-1], test[,-1])
+exp_Trans <- preProcess(exp_Data, method='expoTrans')
+data_P_XT <- predict(exp_Trans, exp_Data)
+train_P_XT <- cbind(P=train_P[,1], data_P_XT[1:1157,])
+test_P_XT <- cbind(PIDN=test[,1], data_P_XT[1158:1884,])
 dim(test_P_XT); dim(train_P_XT)
 
 ####################
 ## Write database ##
 ####################
 save(train_Ca, train_P, train_SOC, train_Sand, train_pH, test, train_P_YJ, test_P_YJ,
-     train_P_XT, test_P_XT, file="data/datasets_all_29Sep2014.RData")
+     train_P_XT, test_P_XT, file="data/datasets_all_30Sep2014.RData")
