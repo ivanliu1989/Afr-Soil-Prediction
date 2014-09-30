@@ -2,11 +2,12 @@
 ## pre Processing ##
 ####################
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
-require(caret)
+require(caret); require(deepnet)
 load('data/datasets_all_30Sep2014.RData')
 dim(test);dim(train_Ca);dim(train_P);dim(train_SOC);dim(train_Sand);dim(train_pH)
 dim(train_P_YJ);dim(test_P_YJ);dim(train_P_XT);dim(test_P_XT)
-
+ID <- as.data.frame(test[,1])
+names(ID)<-'PIDN'
 ########################
 ## Parallel computing ##
 ########################
@@ -24,19 +25,17 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                                          alpha=.05,
                                          method='BT',
                                          complete=T))
-
 ################
 ## 1.train_Ca ##
 ################
 fit_Ca_svm <- train(Ca~., data=train_Ca, 
-                    method='svmPoly',
+                    method='svmRadial',
                     trControl = fitControl,
                     preProc = c('center','scale'),
                     tuneLength=10,
                     # tuneGrid = Grid,
                     verbose=T, 
                     metric='RMSE')
-fit_Ca_svmPoly <- fit_Ca_svm
 png('fit_Ca_svmPoly.png') # visualize model performance
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
@@ -47,8 +46,13 @@ submit_Ca <- cbind(ID, Ca)
 ###############
 ## 2.train_P ##
 ###############
-fit_P_svm_avNNet <- train(P~., data=train_P_XT, 
-                      method='avNNet',
+x <- as.matrix(train_P[,2:3581])
+y <- as.matrix(train_P$P)
+fit_P_deep <- dbn.dnn.train(x=x,y=y,hidden=c(100),learningrate=0.1,
+                            numepochs=10, output='linear')
+P_deep <- nn.predict(fit_P_deep, x)
+fit_P_ridge <- train(P~., data=train_P_XT, 
+                      method='ridge',
                       trControl = fitControl,
                       preProc = c('center','scale'),
                       tuneLength=10,
@@ -56,7 +60,6 @@ fit_P_svm_avNNet <- train(P~., data=train_P_XT,
                       verbose=T, 
                       metric='RMSE')
 # earth, gamboost, avNNet, ridge, lasso, glmnet, gaussprPoly, gcvEarth, kknn, nnet, neuralnet, pcaNNet
-
 png('fit_P_gbm.png') # visualize model performance
 trellis.par.set(caretTheme())
 plot(fit_P_svm)
@@ -68,7 +71,7 @@ submit_P <- cbind(submit_Ca, P)
 ## 3.train_pH ##
 ################
 fit_pH_svm <- train(pH~., data=train_pH, 
-                    method='svmLinear',
+                    method='svmRadial',
                     trControl = fitControl,
                     preProc = c('center','scale'),
                     tuneLength=10,
@@ -86,7 +89,7 @@ submit_pH <- cbind(submit_P, pH)
 ## 4.train_SOC ##
 #################
 fit_SOC_svm <- train(SOC~., data=train_SOC, 
-                     method='svmLinear',
+                     method='svmRadial',
                      trControl = fitControl,
                      preProc = c('center','scale'),
                      tuneLength=10,
@@ -104,7 +107,7 @@ submit_SOC <- cbind(submit_pH, SOC)
 ## 5.train_Sand ##
 ##################
 fit_Sand_svm <- train(Sand~., data=train_Sand, 
-                      method='svmLinear',
+                      method='svmRadial',
                       trControl = fitControl,
                       preProc = c('center','scale'),
                       tuneLength=10,
@@ -123,7 +126,7 @@ submit_Final <- cbind(submit_SOC, Sand)
 #################################
 save(fit_Ca_svmPoly,file='models_2.RData')
 # fit_P_gamboost,fit_P_avNNet,fit_P_ridge,fit_P_lasso,fit_P_glmnet
-write.csv(submit_Final, 'Third_try_not_optimal_MAC_version.csv',row.names=F)
+write.csv(submit_Final, 'Submission_30Sep2014.csv',row.names=F)
 
 ######################
 ## PCA analysis (P) ##
