@@ -51,10 +51,10 @@ y <- as.matrix(train_P$P)
 fit_P_deep <- dbn.dnn.train(x=x,y=y,hidden=c(100),learningrate=0.1,
                             numepochs=10, output='linear')
 P_deep <- nn.predict(fit_P_deep, x)
-fit_P_ridge <- train(P~., data=train_P_XT, 
-                      method='ridge',
+fit_P_svm <- train(P~., data=train_P, 
+                      method='svmRadial',
                       trControl = fitControl,
-                      preProc = c('center','scale'),
+                      preProc = c('center','scale','BoxCox'),
                       tuneLength=10,
                       # tuneGrid = Grid,
                       verbose=T, 
