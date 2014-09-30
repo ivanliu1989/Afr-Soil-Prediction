@@ -1,9 +1,9 @@
 ####################
 ## pre Processing ##
 ####################
-setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 require(caret)
-load('data/datasets_all_29Sep2014.RData')
+load('data/datasets_all_30Sep2014.RData')
 dim(test);dim(train_Ca);dim(train_P);dim(train_SOC);dim(train_Sand);dim(train_pH)
 dim(train_P_YJ);dim(test_P_YJ);dim(train_P_XT);dim(test_P_XT)
 
@@ -47,23 +47,7 @@ submit_Ca <- cbind(ID, Ca)
 ###############
 ## 2.train_P ##
 ###############
-fit_P_svm_XT <- train(P~., data=train_P_XT, 
-                    method='svmRadial',
-                    trControl = fitControl,
-                    preProc = c('center','scale'),
-                    tuneLength=10,
-                    # tuneGrid = Grid,
-                    verbose=T, 
-                    metric='RMSE')
-fit_P_gamboost <- train(P~., data=train_P, 
-                        method='gamboost',
-                        trControl = fitControl,
-                        preProc = c('center','scale'),
-                        tuneLength=10,
-                        # tuneGrid = Grid,
-                        verbose=T, 
-                        metric='RMSE')
-fit_P_avNNet <- train(P~., data=train_P, 
+fit_P_svm_avNNet <- train(P~., data=train_P_XT, 
                       method='avNNet',
                       trControl = fitControl,
                       preProc = c('center','scale'),
@@ -71,30 +55,7 @@ fit_P_avNNet <- train(P~., data=train_P,
                       # tuneGrid = Grid,
                       verbose=T, 
                       metric='RMSE')
-fit_P_ridge <- train(P~., data=train_P, 
-                     method='ridge',
-                     trControl = fitControl,
-                     preProc = c('center','scale'),
-                     tuneLength=10,
-                     # tuneGrid = Grid,
-                     verbose=T, 
-                     metric='RMSE')
-fit_P_lasso <- train(P~., data=train_P, 
-                     method='lasso',
-                     trControl = fitControl,
-                     preProc = c('center','scale'),
-                     tuneLength=10,
-                     # tuneGrid = Grid,
-                     verbose=T, 
-                     metric='RMSE')
-fit_P_glmnet <- train(P~., data=train_P, 
-                      method='glmnet',
-                      trControl = fitControl,
-                      preProc = c('center','scale'),
-                      tuneLength=10,
-                      # tuneGrid = Grid,
-                      verbose=T, 
-                      metric='RMSE')
+# earth, gamboost, avNNet, ridge, lasso, glmnet, gaussprPoly, gcvEarth, kknn, nnet, neuralnet, pcaNNet
 
 png('fit_P_gbm.png') # visualize model performance
 trellis.par.set(caretTheme())
