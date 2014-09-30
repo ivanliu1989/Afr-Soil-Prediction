@@ -1,7 +1,7 @@
 ####################
 ## pre Processing ##
 ####################
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret); require(deepnet)
 load('data/datasets_all_30Sep2014.RData')
 dim(test);dim(train_Ca);dim(train_P);dim(train_SOC);dim(train_Sand);dim(train_pH)
@@ -51,21 +51,28 @@ y <- as.matrix(train_P$P)
 fit_P_deep <- dbn.dnn.train(x=x,y=y,hidden=c(100),learningrate=0.1,
                             numepochs=10, output='linear')
 P_deep <- nn.predict(fit_P_deep, x)
-
+### LOG TRANSFORMATION ###
+range(train_P$P)
+train_P$P <- train_P$P + 1
+train_P$P <- log10(train_P$P)
+histogram(train_P$P)
 fit_P_svm <- train(P~., data=train_P, 
                       method='svmRadial',
                       trControl = fitControl,
-                      preProc = c('center','scale','YeoJohnson'),
-                      tuneLength=10,
+                      preProc = c('center','scale'),
+                      tuneLength=8,
                       # tuneGrid = Grid,
                       verbose=T, 
                       metric='RMSE')
 # earth, gamboost, avNNet, ridge, lasso, glmnet, gaussprPoly, gcvEarth, kknn, nnet, neuralnet, pcaNNet
-png('fit_P_gbm.png') # visualize model performance
+png('fit_P_gbm_logtrans.png') # visualize model performance
 trellis.par.set(caretTheme())
 plot(fit_P_svm)
 dev.off()
 P <- predict(fit_P_svm, test) # joint prediction results
+# invert log transformation
+P <- 10^P
+P <- P-1
 submit_P <- cbind(submit_Ca, P)
 
 ################
