@@ -104,9 +104,37 @@ dim(total_data_linear)
 ###################################
 ## Principal Components Analysis ##
 ###################################
-preProcPCA <- preProcess(total_data, method='pca',thresh = 1)
+preProcPCA <- preProcess(total_data, method='pca',thresh = 0.9999)
 total_data_PCA <- predict(preProcPCA, total_data)
 head(total_data_PCA)
+# modeling
+train_pca_Ca <- cbind(Ca=train_Ca$Ca, total_data_PCA[1:1157,], Depth=depth_train)
+train_pca_P <- cbind(P=train_P$P, total_data_PCA[1:1157,], Depth=depth_train)
+train_pca_pH <- cbind(pH=train_pH$pH, total_data_PCA[1:1157,], Depth=depth_train)
+train_pca_Sand <- cbind(Sand=train_Sand$Sand, total_data_PCA[1:1157,], Depth=depth_train)
+train_pca_SOC <- cbind(SOC=train_SOC$SOC, total_data_PCA[1:1157,], Depth=depth_train)
+test_pca <- cbind(PIDN=PIDN_test,total_data_PCA[1158:1884,], Depth=depth_test)
+dim(train_pca_Ca); dim(test_pca)
+fitControl <- trainControl(method="adaptive_cv",number=10,
+                           repeats=5, summaryFunction = defaultSummary,
+                           returnResamp = "all",
+                           adaptive=list(min=10,
+                                         alpha=.05,
+                                         method='gls',
+                                         complete=T))
+######## CA ##############
+fit_Ca_svm_pca <- train(Ca~., data=train_pca_Ca,
+                    method='rf',
+                    trControl = fitControl,
+                    # preProc = c('center','scale'),
+                    tuneLength=10,
+                    # tuneGrid = Grid,
+                    verbose=T, 
+                    metric='RMSE')
+Ca <- predict(fit_Ca_svm_pca, test_pca)
+submit_pca <- cbind(as.data.frame(PIDN_test), Ca)
+names(submit_pca)[1] <- 'PIDN' 
+
 
 #####################
 ## Factor Analysis ##
