@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret); require(hydroGOF) #rmse
 load('data/datasets_all_01Oct2014.RData')
 load('data/first_deriv_train_data.RData')
@@ -58,8 +58,8 @@ svmImp_Ca; plot(svmImp_Ca)
     train_P_1$P <- train_P_1$P + 1
     train_P_1$P <- log10(train_P_1$P)
     histogram(train_P_1$P)
-fit_P_svm <- train(P~., data=train_P_1, 
-                    method='svmRadial',
+fit_P_ridge <- train(P~., data=train_P_1, 
+                    method='ridge', # ridge/foba, lasso, bagEarth
                     trControl = fitControl,
                     preProc = c('center','scale'),
                     tuneLength=10,
@@ -69,12 +69,11 @@ fit_P_svm <- train(P~., data=train_P_1,
 trellis.par.set(caretTheme())
 plot(fit_P_svm)
 P <- predict(fit_P_svm, train_P_2)
-P <- rep(mean(train_P_1$P), n=length(test_P_1$P)
     # invert log transformation
     P <- 10^P
     P <- P-1
 submit_P <- cbind(submit_Ca, P)
-P <- rep(mean(train_P_1$P), n=length(test_P_1$P))
+P <- rep(mean(train_P_1$P), length(train_P_2$P))
 rmse(P, train_P_2$P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)

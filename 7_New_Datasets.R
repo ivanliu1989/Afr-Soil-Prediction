@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret);
 ### read data
 train <- read.csv("data/training.csv",header=TRUE,stringsAsFactors=FALSE)
@@ -23,10 +23,10 @@ set.seed(888)
 
 ### combine datasets
 train_Ca <- cbind(Ca=labels$Ca, train, Depth=depth)
-train_P <- cbind(Ca=labels$P, train, Depth=depth)
-train_pH <- cbind(Ca=labels$pH, train, Depth=depth)
-train_SOC <- cbind(Ca=labels$SOC, train, Depth=depth)
-train_Sand <- cbind(Ca=labels$Sand, train, Depth=depth)
+train_P <- cbind(P=labels$P, train, Depth=depth)
+train_pH <- cbind(pH=labels$pH, train, Depth=depth)
+train_SOC <- cbind(SOC=labels$SOC, train, Depth=depth)
+train_Sand <- cbind(Sand=labels$Sand, train, Depth=depth)
 test <- cbind(PIDN=ID_test, test, Depth=depth_test)
 dim(train_Ca);dim(train_SOC);dim(test);
 
