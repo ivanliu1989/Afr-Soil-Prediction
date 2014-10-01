@@ -19,15 +19,17 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                                          method='BT',complete=T))
 
 ### ridge ###
-
-
-
+fit_P_ridge <- train(P~., data=train_P_1, method='ridge', trControl = fitControl,
+                     preProc = c('center','scale'),tuneLength=10,# tuneGrid = Grid,
+                     verbose=T,metric='RMSE')
+install.packages("parcor");require(parcor)
+ridge_P <- ridge.cv(train_P_1[,-1],train_P_1$P,lambda=c(0.01,0.03,0.1,0.3,0.9),k=10,plot.it=T)
 ### foba ###
 
 
 
 ### lasso ###
-
+lasso_P <- adalasso(train_P_1[,-1],train_P_1$P,k=10, use.Gram=T, both=T, intercept=T)
 
 
 ### bagEarth ###
