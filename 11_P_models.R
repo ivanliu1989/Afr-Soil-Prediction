@@ -1,5 +1,6 @@
-setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 require(caret); require(hydroGOF) #rmse
+install.packages("parcor");require(parcor)
 load('data/datasets_all_01Oct2014.RData')
 ID <- as.data.frame(test[,1])
 names(ID)<-'PIDN'
@@ -22,14 +23,15 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
 fit_P_ridge <- train(P~., data=train_P_1, method='ridge', trControl = fitControl,
                      preProc = c('center','scale'),tuneLength=10,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
-install.packages("parcor");require(parcor)
-ridge_P <- ridge.cv(train_P_1[,-1],train_P_1$P,lambda=c(0.01,0.03,0.1,0.3,0.9),k=10,plot.it=T)
+ridge_P <- ridge.cv(x=train_x,y=train_y,lambda=c(0.01,0.1,0.3,0.9),k=10,plot.it=T)
 ### foba ###
 
 
 
 ### lasso ###
-lasso_P <- adalasso(train_P_1[,-1],train_P_1$P,k=10, use.Gram=T, both=T, intercept=T)
+train_x <- train_P_1[,-c(1,3580)]
+train_y <- train_P_1$P
+lasso_P <- adalasso(train_x,train_y,k=10, use.Gram=T, both=T, intercept=T)
 
 
 ### bagEarth ###
