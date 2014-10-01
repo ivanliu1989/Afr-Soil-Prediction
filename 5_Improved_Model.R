@@ -1,7 +1,7 @@
 ####################
 ## pre Processing ##
 ####################
-setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 require(caret); require(deepnet)
 load('data/datasets_all_30Sep2014.RData')
 dim(test);dim(train_Ca);dim(train_P);dim(train_SOC);dim(train_Sand);dim(train_pH)
@@ -17,6 +17,7 @@ registerDoMC(cores = NULL)
 ############################
 ## Model control & tuning ##
 ############################
+setseed(888)
 # Grid <- expand.grid(C=c(8,16,32,64,128),sigma=c(0.0118)) 
 fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=5, summaryFunction = defaultSummary,
