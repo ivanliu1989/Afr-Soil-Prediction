@@ -1,7 +1,6 @@
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
-load('data/datasets_all_01Oct2014.RData')
-load('data/SVMs_Models_30Sep2014.RData')
+load('data/12_first_deriv_data.RData')
 ID <- as.data.frame(test[,1])
 names(ID)<-'PIDN'
 
@@ -31,7 +30,7 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            adaptive=list(min=10,alpha=.05,
                                          method='BT',complete=T))
 ### foba ###
-fit_SOC_svm <- train(SOC~., data=train_SOC_1, method='svmRadial',trControl = fitControl,
+fit_SOC_svm <- train(SOC~., data=train_SOC, method='svmRadial',trControl = fitControl,
                       # preProc = c('center','scale'),
                       tuneLength=13,# tuneGrid = Grid,
                       verbose=T,metric='RMSE')
@@ -43,8 +42,8 @@ fit_SOC_svm <- train(SOC~., data=train_SOC_1, method='svmRadial',trControl = fit
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
-SOC <- predict(fit_SOC_svm, train_SOC_1)
-rmse(SOC, train_SOC_1$SOC)
+SOC <- predict(fit_SOC_svm, train_SOC_2)
+rmse(SOC, train_SOC_2$SOC)
 submit_P <- cbind(submit_Ca, P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)
