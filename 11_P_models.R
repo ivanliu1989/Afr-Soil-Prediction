@@ -25,25 +25,40 @@ train_P_2 <- train_P[-index_P,]
 set.seed(888)
 # Grid <- expand.grid(C=c(8,16,32,64,128),sigma=c(0.0118)) 
 fitControl <- trainControl(method="adaptive_cv",number=10,
-                           repeats=5, summaryFunction = defaultSummary,
+                           repeats=10, summaryFunction = defaultSummary,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.05,
                                          method='BT',complete=T))
-### foba ###
-fit_SOC_svm <- train(SOC~., data=train_SOC, method='svmRadial',trControl = fitControl,
-                      # preProc = c('center','scale'),
+# Model
+fit_SOC_svm_pre <- train(SOC~., data=train_SOC, method='svmRadial',trControl = fitControl,
+                      preProc = c('center','scale'),
                       tuneLength=13,# tuneGrid = Grid,
                       verbose=T,metric='RMSE')
+fit_P_svm <- train(P~., data=train_P, method='svmRadial',trControl = fitControl,
+                     # preProc = c('center','scale'),
+                     tuneLength=13,# tuneGrid = Grid,
+                     verbose=T,metric='RMSE')
+fit_pH_svm <- train(pH~., data=train_pH, method='svmRadial',trControl = fitControl,
+                     # preProc = c('center','scale'),
+                     tuneLength=13,# tuneGrid = Grid,
+                     verbose=T,metric='RMSE')
+fit_Sand_svm <- train(Sand~., data=train_Sand, method='svmRadial',trControl = fitControl,
+                     # preProc = c('center','scale'),
+                     tuneLength=13,# tuneGrid = Grid,
+                     verbose=T,metric='RMSE')
+fit_Ca_svm <- train(Ca~., data=train_Ca, method='svmRadial',trControl = fitControl,
+                     # preProc = c('center','scale'),
+                     tuneLength=13,# tuneGrid = Grid,
+                     verbose=T,metric='RMSE')
 
-    # superpc | Supervised Principal Component Analysis    
 
 ### log transformation ###
 
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
-SOC <- predict(fit_SOC_svm, train_SOC_2)
-rmse(SOC, train_SOC_2$SOC)
+SOC <- predict(fit_SOC_svm, train_SOC)
+rmse(SOC, train_SOC$SOC)
 submit_P <- cbind(submit_Ca, P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)
