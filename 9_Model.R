@@ -36,8 +36,8 @@ baggedCT <- bag(x = train_Ca_1[, names(train_Ca_1) != "Ca"],
                                         aggregate = ctreeBag$aggregate))
 summary(baggedCT)
 ########################
-fit_Ca_bagEarth <- train(Ca~., data=train_Ca, 
-                    method='bagEarth', # bagEarth bagFDA
+fit_Ca_svm <- train(Ca~., data=train_Ca_1, 
+                    method='svmRadial', # bagEarth bagFDA
                     trControl = fitControl,
                     preProc = c('center','scale'),
                     tuneLength=10,
@@ -46,8 +46,8 @@ fit_Ca_bagEarth <- train(Ca~., data=train_Ca,
                     metric='RMSE')
 trellis.par.set(caretTheme()) # diagram
 plot(fit_Ca_svm)
-Ca <- predict(fit_Ca_svm, train_Ca) # predict
-rmse(Ca, train_Ca$Ca)
+Ca <- predict(fit_Ca_svm, train_Ca_2) # predict
+rmse(Ca, train_Ca_2$Ca)
 svmImp_Ca <- varImp(fit_Ca_svm, scale = FALSE) # varImp
 svmImp_Ca; plot(svmImp_Ca)
 

@@ -7,6 +7,7 @@ names(data_all)
 index.num <- apply(data_all[50:100,],MARGIN = 2,is.numeric)
 data_all$Depth <- as.numeric(data_all$Depth)
 class(data_all$Depth)
-preProcPCA <- preProcess(data_all, method='pca',thresh = 0.99)
+
+preProcPCA <- preProcess(data_all, method='pca',thresh = 0.999)
 total_data_PCA <- predict(preProcPCA, data_all)
 head(total_data_PCA)
