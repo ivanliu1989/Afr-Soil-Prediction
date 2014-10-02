@@ -3,12 +3,9 @@ require(caret); require(hydroGOF); require(parcor); require(prospectr)
 load('data/12_first_deriv_data.RData')
 ID <- as.data.frame(test[,1])
 names(ID)<-'PIDN'
-levels(train_Ca$Depth) <- c(1,0)
-levels(train_SOC$Depth) <- c(1,0)
-levels(train_Sand$Depth) <- c(1,0)
-levels(train_P$Depth) <- c(1,0)
-levels(train_pH$Depth) <- c(1,0)
-levels(test$Depth) <- c(1,0)
+levels(train_Ca$Depth) <- c(1,0);levels(train_SOC$Depth) <- c(1,0)
+levels(train_Sand$Depth) <- c(1,0);levels(train_P$Depth) <- c(1,0)
+levels(train_pH$Depth) <- c(1,0);levels(test$Depth) <- c(1,0)
 
 ### data split ###
 index_Ca <- createDataPartition(train_Ca$Ca, p=0.75, list = F)
@@ -35,36 +32,21 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.05,
                                          method='BT',complete=T))
-
-### ridge ###
-ridge_P <- ridge.cv(x=train_x,y=train_y,lambda=c(0.01,0.1,0.3,0.9),k=10,plot.it=T)
-
-
 ### foba ###
-fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='svmSpectrumString',trControl = fitControl,
-                      preProc = c('center','scale','pca'),tuneLength=8,# tuneGrid = Grid,
+fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='svmRadial',trControl = fitControl,
+                      # preProc = c('center','scale'),
+                      tuneLength=16,# tuneGrid = Grid,
                       verbose=T,metric='RMSE')
-# svmSpectrumCost
 
-
-### lasso ###
-x <- as.matrix(train_Ca_1[,-1])
-y <- train_Ca_1$Ca
-
-
-### bagEarth ###
-
-
+    # superpc | Supervised Principal Component Analysis    
 
 ### log transformation ###
 
-
-
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
-plot(fit_P_svm)
-P <- predict(fit_P_svm, train_P_2)
+plot(fit_Ca_svm)
+Ca <- predict(fit_Ca_svm, train_Ca_2)
+rmse(Ca, train_Ca_2$Ca)
 submit_P <- cbind(submit_Ca, P)
-rmse(P, train_P_2$P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)
