@@ -1,11 +1,9 @@
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
-load('data/12_first_deriv_data.RData')
+load('data/datasets_all_01Oct2014.RData')
+load('data/SVMs_Models_30Sep2014.RData')
 ID <- as.data.frame(test[,1])
 names(ID)<-'PIDN'
-levels(train_Ca$Depth) <- c(1,0);levels(train_SOC$Depth) <- c(1,0)
-levels(train_Sand$Depth) <- c(1,0);levels(train_P$Depth) <- c(1,0)
-levels(train_pH$Depth) <- c(1,0);levels(test$Depth) <- c(1,0)
 
 ### data split ###
 index_Ca <- createDataPartition(train_Ca$Ca, p=0.75, list = F)
@@ -33,9 +31,9 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            adaptive=list(min=10,alpha=.05,
                                          method='BT',complete=T))
 ### foba ###
-fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='svmRadial',trControl = fitControl,
+fit_SOC_svm <- train(SOC~., data=train_SOC_1, method='svmRadial',trControl = fitControl,
                       # preProc = c('center','scale'),
-                      tuneLength=16,# tuneGrid = Grid,
+                      tuneLength=13,# tuneGrid = Grid,
                       verbose=T,metric='RMSE')
 
     # superpc | Supervised Principal Component Analysis    
@@ -45,8 +43,8 @@ fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='svmRadial',trControl = fitCon
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
-Ca <- predict(fit_Ca_svm, train_Ca_2)
-rmse(Ca, train_Ca_2$Ca)
+SOC <- predict(fit_SOC_svm, train_SOC_1)
+rmse(SOC, train_SOC_1$SOC)
 submit_P <- cbind(submit_Ca, P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)
