@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 load('data/12_first_deriv_data.RData')
 ID <- as.data.frame(test[,1])
@@ -34,8 +34,8 @@ fit_SOC_svm_pre <- train(SOC~., data=train_SOC, method='svmRadial',trControl = f
                       preProc = c('center','scale'),
                       tuneLength=13,# tuneGrid = Grid,
                       verbose=T,metric='RMSE')
-fit_P_svm <- train(P~., data=train_P, method='svmRadial',trControl = fitControl,
-                     # preProc = c('center','scale'),
+fit_P_svm_pre <- train(P~., data=train_P, method='glm',trControl = fitControl,
+                      preProc = c('center','scale'),
                      tuneLength=13,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
 fit_pH_svm <- train(pH~., data=train_pH, method='svmRadial',trControl = fitControl,
@@ -57,8 +57,8 @@ fit_Ca_svm <- train(Ca~., data=train_Ca, method='svmRadial',trControl = fitContr
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
-SOC <- predict(fit_SOC_svm, train_SOC)
-rmse(SOC, train_SOC$SOC)
+P <- predict(fit_P_svm_pre, train_P_1)
+rmse(P, train_P_1$P)
 submit_P <- cbind(submit_Ca, P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)

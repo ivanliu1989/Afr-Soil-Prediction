@@ -1,4 +1,4 @@
-setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret); 
 trainingdata <- read.csv("data/training.csv")
 testdata <- read.csv("data/sorted_test.csv")
