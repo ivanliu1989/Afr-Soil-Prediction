@@ -22,24 +22,18 @@ train_pca_Sand <- cbind(Sand=train_Sand[,1], train_pca)
 save(train_pca_Ca,train_pca_P,train_pca_pH,train_pca_SOC,train_pca_Sand,
      test_pca,file='data/13_pca_data.RData')
 
-################################
-index_Ca <- createDataPartition(train_pca_Ca$Ca, p=0.75, list = F)
-train_Ca_1 <- train_pca_Ca[index_Ca,]
-train_Ca_2 <- train_pca_Ca[-index_Ca,]
-index_P <- createDataPartition(train_pca_P$P, p=0.75, list = F)
-train_P_1 <- train_pca_P[index_P,]
-train_P_2 <- train_pca_P[-index_P,]
-
-### Model preProcess ###
-set.seed(888)
-# Grid <- expand.grid(C=c(8,16,32,64,128),sigma=c(0.0118)) 
+train_Ca<- cbind(Ca=train_Ca[,1], total_data_PCA[1:1157,])
+index_Ca <- createDataPartition(train_Ca$Ca, p=0.75, list = F)
+train_Ca_1 <- train_Ca[index_Ca,]
+train_Ca_2 <- train_Ca[-index_Ca,]
 fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=10, summaryFunction = defaultSummary,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.05,
                                          method='BT',complete=T))
-
 fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='svmRadial',trControl = fitControl,
-                    preProc = c('center','scale'),
+                    # preProc = c('center','scale'),
                     tuneLength=13,# tuneGrid = Grid,
                     verbose=T,metric='RMSE')
+Ca <- predict(fit_Ca_svm, train_Ca_1)
+rmse(Ca, train_Ca_1$Ca)
