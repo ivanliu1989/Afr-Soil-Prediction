@@ -1,6 +1,6 @@
-setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
-load('data/12_first_deriv_data.RData')
+load('data/datasets_all_01Oct2014.RData')
 ID <- as.data.frame(test[,1])
 names(ID)<-'PIDN'
 
@@ -24,31 +24,31 @@ train_P_2 <- train_P[-index_P,]
 ### Model preProcess ###
 set.seed(888)
 # Grid <- expand.grid(C=c(8,16,32,64,128),sigma=c(0.0118)) 
-fitControl <- trainControl(method="adaptive_cv",number=10,
-                           repeats=10, summaryFunction = defaultSummary,
+fitControl <- trainControl(method="adaptive_cv",number=15,
+                           repeats=15, summaryFunction = defaultSummary,
                            returnResamp = "all",
-                           adaptive=list(min=10,alpha=.05,
+                           adaptive=list(min=15,alpha=.01,
                                          method='BT',complete=T))
 # Model
-fit_SOC_svm_pre <- train(SOC~., data=train_SOC, method='svmRadial',trControl = fitControl,
+fit_SOC_svm <- train(SOC~., data=train_SOC, method='svmRadial',trControl = fitControl,
                       preProc = c('center','scale'),
-                      tuneLength=13,# tuneGrid = Grid,
-                      verbose=T,metric='RMSE')
-fit_P_svm_pre <- train(P~., data=train_P, method='glm',trControl = fitControl,
-                      preProc = c('center','scale'),
-                     tuneLength=13,# tuneGrid = Grid,
+                      tuneLength=15,# tuneGrid = Grid,
+                      verbose=T,metric='RMSE') # 0.09157
+fit_P_svm <- train(P~., data=train_P, method='svmRadial',trControl = fitControl,
+                     preProc = c('center','scale'),
+                     tuneLength=15,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
 fit_pH_svm <- train(pH~., data=train_pH, method='svmRadial',trControl = fitControl,
-                     # preProc = c('center','scale'),
-                     tuneLength=13,# tuneGrid = Grid,
+                      preProc = c('center','scale'),
+                     tuneLength=15,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
 fit_Sand_svm <- train(Sand~., data=train_Sand, method='svmRadial',trControl = fitControl,
-                     # preProc = c('center','scale'),
-                     tuneLength=13,# tuneGrid = Grid,
+                     preProc = c('center','scale'),
+                     tuneLength=15,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
 fit_Ca_svm <- train(Ca~., data=train_Ca, method='svmRadial',trControl = fitControl,
-                     # preProc = c('center','scale'),
-                     tuneLength=13,# tuneGrid = Grid,
+                     preProc = c('center','scale'),
+                     tuneLength=15,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
 
 
@@ -57,8 +57,22 @@ fit_Ca_svm <- train(Ca~., data=train_Ca, method='svmRadial',trControl = fitContr
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
-P <- predict(fit_P_svm_pre, train_P_1)
-rmse(P, train_P_1$P)
-submit_P <- cbind(submit_Ca, P)
+
+Ca <- predict(fit_Ca_svm_pre, test)
+P <- predict(fit_P_svm_pre, test)
+pH <- predict(fit_pH_svm_pre, test)
+SOC <- predict(fit_SOC_svm_pre, test)
+Sand <- predict(fit_Sand_svm_pre, test)
+rmse(Sand, train_Sand$Sand)
+
+save(fit_Sand_svm_pre,fit_P_svm_pre,fit_pH_svm_pre,fit_SOC_svm_pre,fit_Sand_svm_pre,
+     file='data/models_02Oct2014.RData')
+
+submit <- cbind(PIDN=ID,Ca=Ca,P=P,pH=pH,SOC=SOC,Sand=Sand)
+names(submit)[1]<-'PIDN'
+write.csv(submit, 'submissions/submission_03Oct2014.csv', row.names=F)
+
+
+
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)
