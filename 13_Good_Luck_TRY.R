@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 load('data/datasets_all_01Oct2014.RData')
 ID <- as.data.frame(test[,1])
@@ -13,15 +13,16 @@ set.seed(888)
 fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=5, summaryFunction = defaultSummary,
                            returnResamp = "all",
-                           adaptive=list(min=10,alpha=.01,method='BT',complete=T))
+                           adaptive=list(min=10,alpha=.05,method='BT',complete=T))
 y <- train_P_1$P;
 x <- train_P_1[,-c(1,3580)];
+# x$Depth <- as.numeric(x$Depth)
 # enet - elasticnet (fraction, lambda)
-fit_P_enet <- train(x,y, method='enet',trControl = fitControl,
+fit_P_enet_2 <- train(x,y, method='enet',trControl = fitControl,
                    preProc = c('center', 'scale'),tuneLength=12,# tuneGrid = Grid,
                    verbose=T,metric='RMSE')
 predict.glmnet()
-
+#############################################################################################
 ### log transformation ###
 range(train_P[,-3580])
 plot(train_P$P, train_P[,3000])
