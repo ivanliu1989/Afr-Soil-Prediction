@@ -15,7 +15,7 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.01,method='BT',complete=T))
 fit_P_svm <- train(P~., data=train_P_1, method='svmRadial',trControl = fitControl,
-                   preProc = c("YeoJohnson"),tuneLength=12,# tuneGrid = Grid,
+                   preProc = c('center', 'scale'),tuneLength=12,# tuneGrid = Grid,
                    verbose=T,metric='RMSE')
 
 ### log transformation ###
@@ -32,9 +32,8 @@ svmImp_P; plot(svmImp_P)
 
 ### svm ###
 require(e1071)
-fit <- svm(P~., data=train_P_1, scale=1, type='eps-regression',
-           kernel='linear')
-P <- predict(fit, train_P_2)
+fit <- svm(train_P_1[,-1],train_P_1$P, scale=F,cost=10000)
+P <- predict(fit, train_P_2[,-1])
 rmse(P, train_P_2$P)
 
 ### transformation ### 
@@ -56,11 +55,12 @@ psi <- matrix(as.numeric(NA), length(y), lltry)
 for (ii in 1:lltry)
     psi[, ii] <- yeo.johnson(y, lambda = ltry[ii])
 ## Not run:
+png('yeo_johnson_P.png')
 matplot(y, psi, type = "l", lwd = 2, lty = 1:lltry,
         ylab = "Yeo-Johnson transformation", col = 1:lltry, las = 1,
         main = "Yeo-Johnson transformation with some values of lambda")
 abline(v = 0, h = 0)
 legend(x = 1, y = -0.5, lty = 1:lltry, legend = as.character(ltry),
        lwd = 2, col = 1:lltry) ## End(Not run)
-
+dev.off()
 
