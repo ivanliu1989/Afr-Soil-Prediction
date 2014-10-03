@@ -14,9 +14,12 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=5, summaryFunction = defaultSummary,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.01,method='BT',complete=T))
-fit_P_svm <- train(log10(P+0.5)~., data=train_P_1, method='svmRadial',trControl = fitControl,
+y <- train_P_1$P;
+x <- train_P_1[,-c(1,3580)];
+fit_P_svm <- train(x,y, method='glmnet',trControl = fitControl,
                    preProc = c('center', 'scale'),tuneLength=12,# tuneGrid = Grid,
                    verbose=T,metric='RMSE')
+predict.glmnet()
 
 ### log transformation ###
 range(train_P[,-3580])
@@ -25,8 +28,9 @@ plot(train_P$P, train_P[,3000])
 ### Model evaluation ### 
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
-Ca <- predict(fit_Ca_svm_pre, test)
-rmse(Sand, train_Sand$Sand)
+P <- predict(fit_P_svm, train_P_1) # Prediction
+P <- 10^P - 0.5
+rmse(P, train_P_1$P)
 svmImp_P <- varImp(fit_P_svm, scale = FALSE) # varImp
 svmImp_P; plot(svmImp_P)
 
@@ -34,8 +38,6 @@ svmImp_P; plot(svmImp_P)
 require(e1071)
 fit <- svm(train_P_1[,-1],train_P_1$P, scale=F,cost=10000)
 P <- predict(fit, train_P_2[,-1])
-    P <- 10^P - 0.5
-
 rmse(P, train_P_2$P)
 
 ### transformation ### 

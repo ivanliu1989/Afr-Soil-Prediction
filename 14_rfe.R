@@ -5,6 +5,16 @@ load('data/datasets_all_01Oct2014.RData')
 x <- train_Ca[,-1]
 y <- train_Ca$Ca
 
+glmnetFuncs <- caretFuncs
+glmnetFuncs$summary <-  defaultSummary
+glmnetFuncs$rank <- function (object, x, y) {
+    vimp <- sort(object$finalModel$beta[, 1])
+    vimp <- as.data.frame(vimp)
+    vimp$var <- row.names(vimp)
+    vimp$'Overall' <- seq(nrow(vimp),1)
+    vimp
+}
+
 MyRFEcontrol <- rfeControl(
     functions = glmnetFuncs,
     method = "boot",
@@ -13,6 +23,7 @@ MyRFEcontrol <- rfeControl(
     returnResamp = "final",
     saveDetails = FALSE,
     verbose = TRUE)
+
 MyTrainControl=trainControl(
     method = "boot",
     number=25,
@@ -20,6 +31,7 @@ MyTrainControl=trainControl(
     classProbs = TRUE,
     summaryFunction=defaultSummary
 )
+
 RFE <- rfe(x,y,sizes = seq(1000,3000,by=100),
            metric = "RMSE",maximize=TRUE,rfeControl = MyRFEcontrol,
            method='glmnet',
