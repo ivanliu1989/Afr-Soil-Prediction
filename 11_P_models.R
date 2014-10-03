@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 load('data/datasets_all_01Oct2014.RData')
 ID <- as.data.frame(test[,1])
@@ -58,11 +58,11 @@ fit_Ca_svm <- train(Ca~., data=train_Ca, method='svmRadial',trControl = fitContr
 trellis.par.set(caretTheme())
 plot(fit_Ca_svm)
 
-Ca <- predict(fit_Ca_svm_pre, test)
-P <- predict(fit_P_svm_pre, test)
-pH <- predict(fit_pH_svm_pre, test)
-SOC <- predict(fit_SOC_svm_pre, test)
-Sand <- predict(fit_Sand_svm_pre, test)
+Ca <- predict(fit_Ca_svm, test)
+P <- predict(fit_P_svm, test)
+pH <- predict(fit_pH_svm, test)
+SOC <- predict(fit_SOC_svm, test)
+Sand <- predict(fit_Sand_svm, test)
 rmse(Sand, train_Sand$Sand)
 
 save(fit_Sand_svm_pre,fit_P_svm_pre,fit_pH_svm_pre,fit_SOC_svm_pre,fit_Sand_svm_pre,
@@ -70,7 +70,7 @@ save(fit_Sand_svm_pre,fit_P_svm_pre,fit_pH_svm_pre,fit_SOC_svm_pre,fit_Sand_svm_
 
 submit <- cbind(PIDN=ID,Ca=Ca,P=P,pH=pH,SOC=SOC,Sand=Sand)
 names(submit)[1]<-'PIDN'
-write.csv(submit, 'submissions/submission_03Oct2014.csv', row.names=F)
+write.csv(submit, 'submissions/submission_04Oct2014_outlier.csv', row.names=F)
 
 
 

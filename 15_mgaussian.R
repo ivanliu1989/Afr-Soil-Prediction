@@ -18,3 +18,12 @@ plot(fit1m,type.coef="2norm")
 fit1m.cv <- cv.glmnet(x,y,family="mgaussian",alpha=1) 
 plot(fit1m.cv)
 coef(fit1m.cv) #Show coefficients at the selected value of lambda
+
+
+y <- as.matrix(y)
+x<-as.matrix(x)
+
+summary(x)
+
+pred_P <- predict(fit1m, test)
+test <- as.matrix(test)

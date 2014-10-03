@@ -31,9 +31,11 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.05,
                                          method='BT',complete=T))
-fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='svmRadial',trControl = fitControl,
+fit_Ca_svm <- train(Ca~., data=train_Ca_1, method='gbm',trControl = fitControl,
                     # preProc = c('center','scale'),
                     tuneLength=13,# tuneGrid = Grid,
                     verbose=T,metric='RMSE')
 Ca <- predict(fit_Ca_svm, train_Ca_1)
 rmse(Ca, train_Ca_1$Ca)
+
+histogram(train_Ca[,1])
