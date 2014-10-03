@@ -14,7 +14,7 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=5, summaryFunction = defaultSummary,
                            returnResamp = "all",
                            adaptive=list(min=10,alpha=.01,method='BT',complete=T))
-fit_P_svm <- train(P~., data=train_P_1, method='svmRadial',trControl = fitControl,
+fit_P_svm <- train(log10(P+0.5)~., data=train_P_1, method='svmRadial',trControl = fitControl,
                    preProc = c('center', 'scale'),tuneLength=12,# tuneGrid = Grid,
                    verbose=T,metric='RMSE')
 
@@ -34,6 +34,8 @@ svmImp_P; plot(svmImp_P)
 require(e1071)
 fit <- svm(train_P_1[,-1],train_P_1$P, scale=F,cost=10000)
 P <- predict(fit, train_P_2[,-1])
+    P <- 10^P - 0.5
+
 rmse(P, train_P_2$P)
 
 ### transformation ### 
@@ -43,7 +45,7 @@ apply(train_P[,-3580], 2, shapiro.test)
 plot(density(log10(train_P$P+0.5)))
 yeo.johnson(y, lambda, derivative = 0, 
             epsilon = sqrt(.Machine$double.eps), inverse = FALSE)
-
+y_n <- yeo.johnson(y, lambda=1, inverse = T)
 # Box-Cox/Yeo-Johnson transformation, centering, scaling,
 # range, imputation, PCA, ICA then spatial sign.
 install.packages('VGAM')
