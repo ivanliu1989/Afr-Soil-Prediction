@@ -16,7 +16,8 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            adaptive=list(min=10,alpha=.01,method='BT',complete=T))
 y <- train_P_1$P;
 x <- train_P_1[,-c(1,3580)];
-fit_P_svm <- train(x,y, method='glmnet',trControl = fitControl,
+# enet - elasticnet (fraction, lambda)
+fit_P_enet <- train(x,y, method='enet',trControl = fitControl,
                    preProc = c('center', 'scale'),tuneLength=12,# tuneGrid = Grid,
                    verbose=T,metric='RMSE')
 predict.glmnet()
