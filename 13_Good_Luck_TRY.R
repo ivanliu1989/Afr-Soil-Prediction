@@ -42,3 +42,25 @@ range(train_P$P)
 shapiro.test(log10(train_P$P+0.5))[1]
 apply(train_P[,-3580], 2, shapiro.test)
 plot(density(log10(train_P$P+0.5)))
+yeo.johnson(y, lambda, derivative = 0, 
+            epsilon = sqrt(.Machine$double.eps), inverse = FALSE)
+
+# Box-Cox/Yeo-Johnson transformation, centering, scaling,
+# range, imputation, PCA, ICA then spatial sign.
+install.packages('VGAM')
+require(VGAM)
+y <- train_P$P
+ltry <- c(0, 0.5, 1, 1.5, 2)  # Try these values of lambda
+lltry <- length(ltry)
+psi <- matrix(as.numeric(NA), length(y), lltry)
+for (ii in 1:lltry)
+    psi[, ii] <- yeo.johnson(y, lambda = ltry[ii])
+## Not run:
+matplot(y, psi, type = "l", lwd = 2, lty = 1:lltry,
+        ylab = "Yeo-Johnson transformation", col = 1:lltry, las = 1,
+        main = "Yeo-Johnson transformation with some values of lambda")
+abline(v = 0, h = 0)
+legend(x = 1, y = -0.5, lty = 1:lltry, legend = as.character(ltry),
+       lwd = 2, col = 1:lltry) ## End(Not run)
+
+
