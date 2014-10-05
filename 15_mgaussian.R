@@ -29,11 +29,21 @@ setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 require(caret); require(hydroGOF); require(parcor); require(prospectr);library(glmnet)
 load('data/datasets_all_01Oct2014.RData')
 
-x <- as.matrix(train_P[,-c(1,3580)])
+x <- as.matrix(train_P[,-c(1)])
 y <- as.matrix(train_P$P)
 #######################################################################
-fit_P_cv <- cv.glmnet(x,y,family='gaussian',alpha=.5,type.measure='mse',nfolds=10)
+fit_P_cv <- cv.glmnet(x,y,family='gaussian',alpha=1,type.measure='mse',nfolds=20)
 fit_P_cv$lambda.min
 coef(fit_P_cv, s='lambda.min')
-predict(fit_P_cv, newx=x[1:5,],s='lambda.min')
+P <- predict(fit_P_cv, newx=x,s='lambda.min')
+P <- predict(fit_P_cv, newx=as.matrix(test[,-c(1,3580)]),s='lambda.min')
+plot(fit_P_cv)
 plot(log(fit_P_cv$lambda), fit_P_cv$cvm, pch=19, col='blue')
+rmse(as.vector(P), train_P$P)
+
+submit <- read.csv('submissions/submission_03Oct2014.csv', sep=',')
+head(submit)
+head(P)
+submit$P <- P
+names(submit)[3]<-'P'
+write.csv(submit, file='submissions/submission_05Oct2014.csv', row.names=F)
