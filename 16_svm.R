@@ -20,8 +20,8 @@ fit_P_svmL$coefs
 fit_P_svmL_tune <- tune.svm(P~., data=train_P, gamma=2^(-1:1),cost=2^(2:16))
 
 tc <- tune.control(nrepeat=10,repeat.aggregate=min, sampling='cross',sampling.aggregate=min,
-                   sampling.disperison=sd,cross=10,best.model=T,
-                   perfomances=T,error.fun=NULL)
+                   sampling.dispersion=sd,cross=10,best.model=T,
+                   performances=T,error.fun=NULL)
 
 fit_P_svmL_tune <- tune(svm, P~., data=train_P, ranges=list(gamma=2^(-1:1),cost=2^(2:16)),
                         tunecontrol = tc)
