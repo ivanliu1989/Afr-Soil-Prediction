@@ -24,19 +24,19 @@ train_P_2 <- train_P[-index_P,]
 ### Model preProcess ###
 set.seed(888)
 # Grid <- expand.grid(C=c(8,16,32,64,128),sigma=c(0.0118)) 
-fitControl <- trainControl(method="adaptive_cv",number=15,
-                           repeats=15, summaryFunction = defaultSummary,
+fitControl <- trainControl(method="adaptive_cv",number=5,
+                           repeats=5, summaryFunction = defaultSummary,
                            returnResamp = "all",
-                           adaptive=list(min=15,alpha=.01,
+                           adaptive=list(min=5,alpha=.05,
                                          method='BT',complete=T))
 # Model
-fit_SOC_svm <- train(SOC~., data=train_SOC, method='svmRadial',trControl = fitControl,
+fit_SOC_svm <- train(SOC~., data=train_SOC, method='glmnet',trControl = fitControl,
                       preProc = c('center','scale'),
                       tuneLength=15,# tuneGrid = Grid,
                       verbose=T,metric='RMSE') # 0.09157
-fit_P_svm <- train(P~., data=train_P, method='svmRadial',trControl = fitControl,
+fit_P_svm <- train(P~., data=train_P_1, method='svmRadial',trControl = fitControl,
                      preProc = c('center','scale'),
-                     tuneLength=15,# tuneGrid = Grid,
+                     tuneLength=8,# tuneGrid = Grid,
                      verbose=T,metric='RMSE')
 fit_pH_svm <- train(pH~., data=train_pH, method='svmRadial',trControl = fitControl,
                       preProc = c('center','scale'),
