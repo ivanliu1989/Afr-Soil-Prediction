@@ -23,7 +23,7 @@ tc <- tune.control(nrepeat=10,repeat.aggregate=min, sampling='cross',sampling.ag
                    sampling.dispersion=sd,cross=10,best.model=T,
                    performances=T,error.fun=NULL)
 
-fit_P_svmL_tune <- tune(svm, P~., data=train_P, ranges=list(gamma=2^(-1:1),cost=2^(2:16)),
+fit_P_svmL_tune <- tune(svm, P~., data=train_P, ranges=list(gamma=2^(-1:1),cost=2^(2:13)),
                         tunecontrol = tc)
 best.tune()
 
