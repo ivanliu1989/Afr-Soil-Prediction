@@ -22,7 +22,7 @@ fit_P_svmL_tune <- tune.svm(Ca~., data=train_Ca, gamma=2^(-1:1),cost=2^(2:6))
 tc <- tune.control(nrepeat=5,repeat.aggregate=min, sampling='cross',sampling.aggregate=min,
                    sampling.dispersion=sd,cross=10,best.model=T,
                    performances=T,error.fun=NULL)
-
+gamma = 1/length(names(train_pH_1[,-1]))
 fit_pH_svmL_tune <- tune(svm, pH~., data=train_pH_1, ranges=list(gamma=2^(-3:1),cost=2^(2:10)),
                         tunecontrol = tc)
 best.tune()

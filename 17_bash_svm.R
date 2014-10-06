@@ -9,16 +9,18 @@ train_pH_2 <- train_pH[-index_pH,]
 
 ### Model preProcess ###
 set.seed(888)
-# Grid <- expand.grid(C=c(8,16,32,64,128),sigma=c(0.0118)) 
+
 fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=5, summaryFunction = defaultSummary,
                            returnResamp = "all",
-                           adaptive=list(min=8,alpha=.05,method='BT',complete=T))
+                           adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 fit_pH <- train(pH~., data=train_pH_1, method='svmRadial',trControl = fitControl,
-                      preProc = c('center', 'scale'),tuneLength=10,# tuneGrid = Grid,
+                      preProc = c('center', 'scale'),tuneLength=12,
                       verbose=T,metric='RMSE')
 
-pH <- predict(fit_pH, train_pH_2)
-rmse(pH, train_pH_2$pH)
+pH <- predict(fit_pH, train_pH_1)
+pH2 <- predict(fit_pH, train_pH_2)
+rmse(pH, train_pH_1$pH)
+rmse(pH2, train_pH_2$pH)
 
 save(fit_pH, file='models/fit_pH_baseline.RData')
