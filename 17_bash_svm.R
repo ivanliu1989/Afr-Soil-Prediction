@@ -15,7 +15,7 @@ fitControl <- trainControl(method="adaptive_cv",number=10,
                            returnResamp = "all",
                            adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 fit_pH <- train(pH~., data=train_pH_1, method='svmRadial',trControl = fitControl,
-                      preProc = c('center', 'scale'),tuneLength=12,
+                      preProc = c('center', 'scale'),tuneLength=10,
                       verbose=T,metric='RMSE')
 
 pH <- predict(fit_pH, train_pH_1)
