@@ -32,8 +32,8 @@ png('svm_tune_Ca.png')
 plot(fit_P_svmL_tune)
 dev.off()
 
-Ca <- predict(fit_P_svmL_tune$best.model, train_Ca)
-rmse(as.vector(Ca), train_Ca$Ca)
+pH <- predict(fit_pH_svmL_tune$best.model, train_pH_2)
+rmse(as.vector(pH), train_pH_2$pH)
 
 fit_P_svmL_tune$best.parameters
 fit_P_svmL_tune$best.performance
