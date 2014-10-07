@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn import svm, cross_validation
 
-train = pd.read_csv('training.csv')
-test = pd.read_csv('sorted_test.csv')
+train = pd.read_csv('data/training.csv')
+test = pd.read_csv('data/sorted_test.csv')
 labels = train[['Ca','P','pH','SOC','Sand']].values
 
 train.drop(['Ca', 'P', 'pH', 'SOC', 'Sand', 'PIDN'], axis=1, inplace=True)
