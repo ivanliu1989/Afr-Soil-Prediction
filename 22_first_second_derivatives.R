@@ -33,18 +33,27 @@ d2 <- t(diff(t(total.dev1), differences = 2)) # second derivative
 gd1 <- t(diff(t(total.dev1), differences = 1, lag = 10)) # first derivative with a gap of 10 bands
 gsd1 <- gapDer(X = total.dev1, m = 1, w = 11, s = 10) # Gap-segment derivative
 
-png('dev_smoo_comp.png', width = 600, height = 1200)
-par(mfcol = c(5,1))
-plot(as.matrix(total.dev1)[1, ], type = "l", xlab = "Wavelength", ylab = "", main='raw data')
-plot(d1[1, ], type = "l", xlab = "Wavelength", ylab = "", col='green', main='first derivative')
-plot(d2[1, ], type = "l", xlab = "Wavelength", ylab = "", col='darkblue', main='second derivative')
-plot(gd1[1, ], type = "l", xlab = "Wavelength", ylab = "",col='red', main='first derivative with a gap of 10 bands')
-plot(gsd1[1, ], type = "l", xlab = "Wavelength", ylab = "",col='blue', main='Gap-segment derivative')
-dev.off()
-
-
 
 
 ##############################
 ## Savitzky-Golay filtering ##
 ##############################
+sg <- savitzkyGolay(total.dev1, p = 3, w = 11, m = 1)
+sg2 <- savitzkyGolay(total.dev1, p = 3, w = 11, m = 2)
+sg3 <- savitzkyGolay(total.dev1, p = 2, w = 5, m = 2)
+
+png('dev_smoo_comp_2.png', width = 1000, height = 1200)
+par(mfcol = c(4,2))
+plot(as.matrix(total.dev1)[1, ], type = "l", xlab = "Wavelength", ylab = "", main='raw data')
+plot(d1[1, ], type = "l", xlab = "Wavelength", ylab = "", col='green', main='first derivative')
+plot(d2[1, ], type = "l", xlab = "Wavelength", ylab = "", col='darkblue', main='second derivative')
+plot(gd1[1, ], type = "l", xlab = "Wavelength", ylab = "",col='red', main='first derivative with a gap of 10 bands')
+plot(gsd1[1, ], type = "l", xlab = "Wavelength", ylab = "",col='blue', main='Gap-segment derivative')
+plot(sg[1, ], type = "l", col='green',xlab = "Wavelength", ylab = "", main='Savitzky-Golay 1st derivative')
+plot(sg2[1, ], type = "l", col='red',xlab = "Wavelength", ylab = "", main='Savitzky-Golay 2nd derivative')
+plot(sg3[3, ], type = "l", col='red',xlab = "Wavelength", ylab = "", main='Savitzky-Golay 2nd derivative(5 windows, 2 poly)')
+dev.off()
+
+
+
+
