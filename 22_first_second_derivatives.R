@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 train <- read.csv('data/training.csv',stringsAsFactor=F)
 test <- read.csv('data/sorted_test.csv',stringsAsFactor=F)
