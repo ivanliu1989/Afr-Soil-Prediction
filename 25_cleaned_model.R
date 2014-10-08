@@ -1,0 +1,21 @@
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+require(caret); require(hydroGOF); require(parcor); require(prospectr)
+load('data/88_data.RData')
+
+index <- createDataPartition(train_SOC$SOC,p = 0.75,list = F)
+train_SOC_1 <- train_SOC[index,]
+train_SOC_2 <- train_SOC[-index,]
+
+k_fold <- createMultiFolds(train_SOC$Depth,k = 10,times = 10)
+# adaptive_LGOCV adaptive_cv adaptive_boot
+fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
+                           summaryFunction = defaultSummary,
+                           returnResamp = "all", selectionFunction = "best",
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T))
+
+fit_SOC <- train(SOC~.,data=train_SOC_1, method='svmRadial',trControl = fitControl,
+                 preProc = c('center', 'scale'),tuneLength=10,
+                 verbose=T,metric='RMSE',maximize=F)
+
+SOC <- predict(fit_SOC, train_SOC_1)
+rmse(SOC, train_SOC_1$SOC)
