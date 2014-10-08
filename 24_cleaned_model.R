@@ -16,13 +16,18 @@ dim(train_Ca_1);dim(train_Ca_2)
 ## model ##
 fitControl <- trainControl(method="adaptive_cv",number=10,
                            repeats=5, summaryFunction = defaultSummary,
-                           returnResamp = "all",selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T))
+                           returnResamp = "all",
+                           adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 
-fit_Ca <- train(Ca~., data=train_Ca_1, method='svmRadial',trControl = fitControl,
+fit_Ca <- train(Ca~., data=train_Ca[,1:3534], method='svmRadial',trControl = fitControl,
                  preProc = c('center', 'scale'),tuneLength=10,
                  verbose=T,metric='RMSE',maximize=F)
 
 ## prediction ##
-Ca <- predict(fit_Ca, train_Ca_1)
-rmse(Ca, train_Ca_1$Ca)
+Ca <- predict(fit_Ca_2, test)
+rmse(Ca, train_Ca$Ca)
+
+fit_Ca;fit_Ca_2
+
+submit <- read.csv('submissions/submission_03Oct2014.csv', sep=',')
+head(submit); head(Ca)
