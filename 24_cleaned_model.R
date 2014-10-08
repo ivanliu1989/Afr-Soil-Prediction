@@ -22,24 +22,28 @@ k_fold <- createMultiFolds(train_Ca$TMAP,k = 10,times = 10)
 
 ## model ##
 Grid <- expand.grid(C=c(8,24,72,216,628,1884),
-                    sigma=c(0.0003,0.0118,0.03,0.1,0.3,1)) 
+                    sigma=c(0.0003,0.001,0.01,0.1,0.3,1)) 
 
-fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
+fitControl <- trainControl(method="repeatedcv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
-                           returnResamp = "all", 
-                           adaptive=list(min=12,alpha=.05,method='BT',complete=T))
+                           returnResamp = "all")
+                           # , adaptive=list(min=12,alpha=.05,method='BT',complete=T))
                             # index=k_fold)
 fit_Ca <- train(x=gsd1[1:1157,],y=labels$Ca, method='svmRadial',trControl = fitControl,
                  preProc = c('center', 'scale'),tuneLength=10,
                  verbose=T,metric='RMSE',maximize=F)
 
+fit_Ca_nonPre <- train(x=gsd1[1:1157,],y=labels$Ca, method='svmRadial',
+                       trControl = fitControl,tuneLength=10,
+                       verbose=T,metric='RMSE',maximize=F)
+
 fit_Ca_tune <- train(x=gsd1[1:1157,],y=labels$Ca, method='svmRadial',
                      trControl = fitControl,preProc = c('center', 'scale'), 
-                     tune=Grid,verbose=T,metric='RMSE',maximize=F)
+                     tuneGrid=Grid,verbose=T,metric='RMSE',maximize=F)
 
 ## prediction ##
 Ca <- predict(fit_Ca, gsd1[1:1157,])
-rmse(Ca, train_Ca_2$Ca)
+rmse(Ca, train_Ca$Ca)
 
 fit_Ca;fit_Ca_2
 
