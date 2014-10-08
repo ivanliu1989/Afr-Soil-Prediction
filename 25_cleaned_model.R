@@ -11,11 +11,16 @@ k_fold <- createMultiFolds(train_SOC$Depth,k = 10,times = 10)
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T))
+                           adaptive=list(min=9,alpha=.05,method='gls',complete=T))
 
-fit_SOC <- train(SOC~.,data=train_SOC_1, method='svmRadial',trControl = fitControl,
+fit_SOC <- train(SOC~.,data=train_SOC, method='svmRadial',trControl = fitControl,
                  preProc = c('center', 'scale'),tuneLength=10,
                  verbose=T,metric='RMSE',maximize=F)
 
-SOC <- predict(fit_SOC, train_SOC_1)
-rmse(SOC, train_SOC_1$SOC)
+SOC <- predict(fit_SOC3, train_SOC)
+rmse(SOC, train_SOC$SOC)
+
+submit <- read.csv('submissions/submission_03Oct2014.csv', sep=',')
+head(submit); head(SOC)
+submit$SOC <- SOC
+write.csv(submit, 'submission_new/2.csv',row.names=F)
