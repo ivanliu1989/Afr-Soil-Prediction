@@ -18,9 +18,9 @@ fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=9,alpha=.05,method='gls',complete=T))
 
-# glmStepAIC, kernelpls (0.878/1.071), plsRglm, pls
-# spls, svmSpectrumString, widekernelpls, xyf, svmRadial (0.816 baseline)
-fit_P <- train(P~.,data=train_P_1, method='pls',trControl = fitControl,
+# glmStepAIC, kernelpls (0.878/1.071), plsRglm, pls (0.878/1.071)
+# spls, widekernelpls, xyf, svmRadial (0.816 baseline)
+fit_P <- train(P~.,data=train_P_1, method='widekernelpls',trControl = fitControl,
                tuneLength=10, verbose=T,metric='RMSE') 
                # preProc = c('center', 'scale'),
 
