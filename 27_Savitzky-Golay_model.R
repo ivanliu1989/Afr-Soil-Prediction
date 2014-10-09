@@ -3,7 +3,7 @@ require(caret); require(hydroGOF); require(parcor); require(prospectr)
 load('data/Savitzky-Golay-Data.RData')
 
 train_P <- train_SG[,-c(1,2,4,5,3559:3574)]
-
+train_P$Depth <- ifelse(train_P$Depth == 'Topsoil',1,0)
 ##############
 ## Modeling ##
 ##############
@@ -18,17 +18,19 @@ fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=9,alpha=.05,method='gls',complete=T))
 
+# 0.816 baseline
 # glmStepAIC, kernelpls (0.878/1.071), plsRglm, pls (0.878/1.071)
-# spls, widekernelpls, xyf, svmRadial (0.816 baseline)
-fit_P <- train(P~.,data=train_P_1, method='widekernelpls',trControl = fitControl,
-               tuneLength=10, verbose=T,metric='RMSE') 
+# spls, widekernelpls (0.855/1.071), xyf, svmRadial (0.739/0.87365)
+# svmRadial_full (0.739/0.87365)
+fit_P <- train(P~.,data=train_P, method='svmRadial',trControl = fitControl,
+               tuneLength=10, verbose=T,metric='RMSE',preProc = c('center', 'scale')) 
                # preProc = c('center', 'scale'),
 
-P <- predict(fit_P, train_P_2)
+P <- predict(fit_P, test_SG[,2:3554])
 rmse(P, train_P_2$P)
 
 submit <- read.csv('submissions/submission_03Oct2014.csv', sep=',')
 head(submit$P); head(P)
 
 submit$P <- P
-write.csv(submit, 'submission_new/2.csv',row.names=F)
+write.csv(submit, 'submission_new/10OCT.csv',row.names=F)
