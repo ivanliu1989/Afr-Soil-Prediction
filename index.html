@@ -32,43 +32,63 @@
       <section>
         <div id="title">
           <h1>A Kaggle Competition - Africa Soil Prediction Challenge</h1>
-          <p>svm, soil science, machine learning</p>
+          <p>SVMs, Soil science, Machine learning, Savitzky-Golay</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/ivanliu1989">ivanliu1989</a></span>
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="data-fields" class="anchor" href="#data-fields"><span class="octicon octicon-link"></span></a>Data Fields</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p><strong><em>SOC, pH, Ca, P, Sand</em></strong> are the five target variables for predictions. The data have been <strong><em>monotonously transformed</em></strong> from the original measurements and thus include negative values. </p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<ul>
+<li>
+<strong>PIDN:</strong> unique soil sample identifier</li>
+<li>
+<strong>SOC:</strong> Soil organic carbon</li>
+<li>
+<strong>pH:</strong> pH values</li>
+<li>
+<strong>Ca:</strong> Mehlich-3 extractable Calcium</li>
+<li>
+<strong>P:</strong> Mehlich-3 extractable Phosphorus</li>
+<li>
+<strong>Sand:</strong> Sand content </li>
+<li>
+<strong>m7497.96 - m599.76:</strong> There are 3,578 mid-infrared absorbance measurements. For example, the "m7497.96" column is the absorbance at wavenumber 7497.96 cm-1. We suggest you to remove spectra CO2 bands which are in the region m2379.76 to m2352.76, but you do not have to.</li>
+<li>
+<strong>Depth:</strong> Depth of the soil sample (2 categories: "Topsoil", "Subsoil")</li>
+</ul><p>There are also some potential spatial predictors from remote sensing data sources. Short variable descriptions are provided below and additional descriptions can be found at AfSIS data. The data have been mean <strong><em>centered</em></strong> and <strong><em>scaled</em></strong>.</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<ul>
+<li>
+<strong>BSA:</strong> average long-term Black Sky Albedo measurements from MODIS satellite images (BSAN = near-infrared, BSAS = shortwave, BSAV = visible)</li>
+<li>
+<strong>CTI:</strong> compound topographic index calculated from Shuttle Radar Topography Mission elevation data</li>
+<li>
+<strong>ELEV:</strong> Shuttle Radar Topography Mission elevation data</li>
+<li>
+<strong>EVI:</strong> average long-term Enhanced Vegetation Index from MODIS satellite images.</li>
+<li>
+<strong>LST:</strong> average long-term Land Surface Temperatures from MODIS satellite images (LSTD = day time temperature, LSTN = night time temperature)</li>
+<li>
+<strong>Ref:</strong> average long-term Reflectance measurements from MODIS satellite images (Ref1 = blue, Ref2 = red, Ref3 = near-infrared, Ref7 = mid-infrared)</li>
+<li>
+<strong>Reli:</strong> topographic Relief calculated from Shuttle Radar Topography mission elevation data</li>
+<li>
+<strong>TMAP &amp; TMFI:</strong> average long-term Tropical Rainfall Monitoring Mission data (TMAP = mean annual precipitation, TMFI = modified Fournier index)</li>
+</ul><h3>
+<a name="data-exploration" class="anchor" href="#data-exploration"><span class="octicon octicon-link"></span></a>Data Exploration</h3>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<a name="preprocess-and-data-transformation" class="anchor" href="#preprocess-and-data-transformation"><span class="octicon octicon-link"></span></a>Preprocess and Data Transformation</h3>
 
 <h3>
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
 <p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
 
     </div>
