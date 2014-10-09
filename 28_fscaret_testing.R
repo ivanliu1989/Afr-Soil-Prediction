@@ -16,13 +16,17 @@ testDF <- train_P_MISO[-index,]
 
 ### function ###
 RES_P <- fscaret(trainDF, testDF, myTimeLimit = 60*60*24, preprocessData=F,
-                 Used.funcRegPred=c('all'), no.cores=1, with.labels=T, missData=NULL,
+                 Used.funcRegPred=c('svmRadial','rf','svmLinear'), no.cores=1, with.labels=T, missData=NULL,
                  supress.output=T, regPred=T, impCalcMet='RMSE&MSE', method='repeatedcv',
                  returnResamp='all', skel_outfile=NULL)
 print(RES_P)
 RES_P$ModelPred
 RES_P$VarImp$rawMSE
+
 RES_P$PPlabels
+summary(RES_P)
 myRES_tab <- RES_P$VarImp$matrixVarImp.MSE[1:10,]
 # RES_P$PPTrainDF
 # RES_P$PPTestDF
+
+save(RES_P, file='feature/res_P.RData')
