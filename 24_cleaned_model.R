@@ -49,8 +49,8 @@ fit_Ca;fit_Ca_2
 
 submit <- read.csv('submissions/submission_03Oct2014.csv', sep=',')
 head(submit); head(Ca)
-submit$Ca <- Ca
-write.csv(submit, 'submission_new/2.csv',row.names=F)
+submit$P <- P
+write.csv(submit, 'submission_new/3.csv',row.names=F)
 
 fit_Ca <- train(x=gsd1[1:1157,],y=labels$Ca, method='svmRadial',trControl = fitControl,
                   preProc = c('center', 'scale'),tuneLength=16,
@@ -67,7 +67,7 @@ fit_pH <- train(x=gsd1[1:1157,],y=labels$pH, method='svmRadial',trControl = fitC
 fit_Sand <- train(x=gsd1[1:1157,],y=labels$Sand, method='svmRadial',trControl = fitControl,
                   preProc = c('center', 'scale'),tuneLength=16,
                   verbose=T,metric='RMSE',maximize=F)
-Ca<- predict(fit_Ca,gsd1[1:1157,])
-
+P<- predict(fit_P,gsd1[1158:1884,])
+rmse(P, labels$P[1:1157])
 head(submit)
-head(Ca)
+head(P)
