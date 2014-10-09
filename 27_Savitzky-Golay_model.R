@@ -4,48 +4,29 @@ load('data/Savitzky-Golay-Data.RData')
 
 train_P <- train_SG[,-c(1,2,4,5,3559:3574)]
 
-#######################
-## Feature selection ##
-#######################
-ctrl <- rfeControl(functions = lmFuncs,
-                   method = "repeatedcv",
-                   repeats = 5,
-                   verbose = T)
-lmProfile <- rfe(train_P[,-1], train_P$P,
-                 sizes = c(1000,2000,3500),
-                 rfeControl = ctrl,metric='RMSE')
-#     predictors(lmProfile)
-#     lmProfile$fit
-#     head(lmProfile$resample)
-#     trellis.par.set(caretTheme())
-#     plot(lmProfile, type = c("g", "o"))
-#     within10Pct <- pickSizeTolerance(lmProfile, metric = "RMSE", tol = 10, maximize = FALSE)
-#     lmProfile$selectVar
-#     trellis.par.set(caretTheme())
-#     plot1 <- plot(lmProfile, type = c("g", "o"))
-#     plot2 <- plot(lmProfile, type = c("g", "o"), metric = "Rsquared")
-#     print(plot1, split=c(1,1,1,2), more=TRUE)
-#     print(plot2, split=c(1,2,1,2))
-
-
 ##############
 ## Modeling ##
 ##############
-k_fold <- createMultiFolds(train_SOC$Depth,k = 10,times = 10)
+set.seed(888)
+index <- createDataPartition(train_P$P, p=0.75, list=F)
+train_P_1 <- train_P[index,]
+train_P_2 <- train_P[-index,]
+
 # adaptive_LGOCV adaptive_cv adaptive_boot
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=9,alpha=.05,method='gls',complete=T))
+# glmStepAIC, kernelpls, plsRglm, pls, spls, svmSpectrumString, widekernelpls, xyf, svmRadial
+fit_P <- train(P~.,data=train_P_1, method='glmStepAIC',trControl = fitControl,
+               tuneLength=10, verbose=T,metric='RMSE',maximize=F) 
+               # preProc = c('center', 'scale'),
 
-fit_SOC_1 <- train(SOC~.,data=train_SOC, method='svmRadial',trControl = fitControl,
-                   preProc = c('center', 'scale'),tuneLength=10,
-                   verbose=T,metric='RMSE',maximize=F)
-
-SOC <- predict(fit_SOC_1, test)
-rmse(SOC, train_SOC$SOC)
+P <- predict(fit_P, train_P_1)
+rmse(P, train_P_1$P)
 
 submit <- read.csv('submissions/submission_03Oct2014.csv', sep=',')
-head(submit$SOC); head(SOC)
-submit$SOC <- SOC
+head(submit$P); head(P)
+
+submit$P <- P
 write.csv(submit, 'submission_new/2.csv',row.names=F)
