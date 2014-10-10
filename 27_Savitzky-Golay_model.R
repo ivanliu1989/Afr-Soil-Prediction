@@ -7,14 +7,16 @@ train_P <- train_SG[,-c(1,2,4,5)] #,3559:3574
 train_P$Depth <- ifelse(train_P$Depth == 'Topsoil',1,0)
 test_P <- test_SG
 test_P$Depth <- ifelse(test_P$Depth == 'Topsoil',1,0)
-y = train_P$P ## y
+y = train_P$P 
+y_array <- array(y)
+names(y_array) <- names(y)                              ## y
 all = rbind(train_P[,-1], test_P[,-1])
 scale <- preProcess(all)
 all <- predict(scale, all)
 x <- all[1:1157,] 
 x_array <- array(x)
-names(x_array) <- names(x) ## x
-test <- cbind(PIDN=test_P[,1], all[1158:1884,]) ## test
+names(x_array) <- names(x)                              ## x
+test <- cbind(PIDN=test_P[,1], all[1158:1884,])         ## test
 
 ##############
 ## Modeling ##
