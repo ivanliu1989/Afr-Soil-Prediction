@@ -27,7 +27,8 @@ fitControl <- trainControl(method="adaptive_cv", number=10, repeats=5,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=12,alpha=.05,method='BT',complete=T))
-
+fitGrid <- grid(C=c(2^4,2^4.25,2^4.5,2^4.75,2^5,2^5.25,2^5.5,2^5.75), 
+                alpha=c(2^-13,2^-12,0.00028019052956,2^-11,2^-10))
 # 0.816 baseline
 # glmStepAIC, kernelpls (0.878/1.071), plsRglm, pls (0.878/1.071)
 # spls, widekernelpls (0.855/1.071), xyf, svmRadial (0.739/0.87365)
