@@ -42,16 +42,16 @@ all_melt <- NULL
 gc()
 
 # Calculated euclidean distance between each pair of Sentinel Landscapes. Project these distances onto 2-D using Multidimensional Scaling 
-d <- dist(all_mean[,3:3580]) # euclidean distances between the rows
+d <- dist(all_mean[,3:3576]) # euclidean distances between the rows
 fit <- cmdscale(d,eig=TRUE, k=2) # k is the number of dim
 #fit # view results
 
 # plot solution 
 x <- fit$points[,1]
 y <- fit$points[,2]
-plot(x, y, #xlab="Coordinate 1", ylab="Coordinate 2", 
-     main="Sentinel Landscape Distances",    type="n")
-text(x, y, labels = row.names(all_mean), cex=.7)
+plot(x, y, xlab="Coordinate 1", ylab="Coordinate 2", 
+     main="Sentinel Landscape Distances", type="n")
+text(x, y, labels = row.names(all_mean), cex=.7, col=rainbow(2))
 
 # This calculates euclidean distances for each pair of groups a second way.
 distances <- data.frame(GroupA=numeric(),GroupB=numeric(),Dist=numeric())
