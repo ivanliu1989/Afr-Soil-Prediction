@@ -11,7 +11,9 @@ y = train_P$P ## y
 all = rbind(train_P[,-1], test_P[,-1])
 scale <- preProcess(all)
 all <- predict(scale, all)
-x <- all[1:1157,] ## x
+x <- all[1:1157,] 
+x_array <- array(x)
+names(x_array) <- names(x) ## x
 test <- cbind(PIDN=test_P[,1], all[1158:1884,]) ## test
 
 ##############
@@ -33,7 +35,7 @@ fitGrid <- grid(C=c(2^4,2^4.25,2^4.5,2^4.75,2^5,2^5.25,2^5.5,2^5.75),
 # glmStepAIC, kernelpls (0.878/1.071), plsRglm, pls (0.878/1.071)
 # spls, widekernelpls (0.855/1.071), xyf, svmRadial (0.739/0.87365)
 # svmRadial_full (0.738/0.2003)
-fit_P <- train(x=x, y=y, method='svmLinear',trControl = fitControl,
+fit_P <- train(x=x_array, y=y, method='svmLinear',trControl = fitControl,
                tuneLength=8, verbose=T,metric='RMSE') 
                # preProc = c('center', 'scale'),
 
