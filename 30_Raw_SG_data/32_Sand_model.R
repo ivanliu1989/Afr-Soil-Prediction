@@ -10,5 +10,18 @@ index <- createDataPartition(train_Sand$Sand, p=.7, list=F)
 train <- train_Sand[index,]
 test <- train_Sand[-index,]
 
-install.packages('fscaret', dependencies=c('Depends','Suggests'))
-require(fscaret)
+# fitGrid <- expand.grid(interaction.depth=c(8,9,10),n.trees=c(300,350,400,450,500),shrinkage=c(0.05,0.1))
+fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
+                           summaryFunction = defaultSummary,
+                           returnResamp = "all", selectionFunction = "best",
+                           adaptive=list(min=12,alpha=.05,method='BT',complete=T))
+#  ,adaptive=list(min=12,alpha=.05,method='BT',complete=T))
+
+fit_Sand <- train(Sand~.,data=train, method='svmRadial',trControl = fitControl,
+                  tuneLength=8,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+# tuneLength=12, tuneGrid=fitGrid
+
+
+submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
+SOC<- predict(fit_SOC, test_SOC)
+head(submit$SOC); head(SOC)
