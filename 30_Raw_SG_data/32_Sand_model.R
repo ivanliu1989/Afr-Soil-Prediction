@@ -1,5 +1,6 @@
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 load('data/Savitzky-Golay-Data.RData')
+load('models/SOC_26.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 
 test_Sand <- test_SG
@@ -17,11 +18,13 @@ fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 #  ,adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 
-fit_Sand <- train(Sand~.,data=train, method='svmRadial',trControl = fitControl,
+fit_Sand_3 <- train(Sand~.,data=train, method='enet',trControl = fitControl,
                   tuneLength=8,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
+# enet (elasticnet)
 
+Sand<- predict(fit_Sand_2, train)
+rmse(Sand, train$Sand)
 
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
-SOC<- predict(fit_SOC, test_SOC)
 head(submit$SOC); head(SOC)
