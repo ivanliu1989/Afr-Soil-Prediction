@@ -26,9 +26,17 @@ SOC<- predict(fit_SOC, test_SOC)
 head(submit$SOC); head(SOC)
 
 
-
+### e1071 ###
+require(e1071)
 fit_Sand_svm <- svm(Sand~., data=train_Sand, scale=T, type='eps-regression',
                     kernel='linear', cost=16, cross=10,)
 
+tuneControl <- tune.control(nrepeat=10, sampling='cross', cross=10, best.model=T, performances=T, 
+                            error.fun=T)
+
+fit_Sand_svm_tune <- best.tune(svm, Sand~., data=train_Sand, tunecontrol=tuneControl,
+                               ranges=list(gamma = 2^(-1:1),cost=2^(2:4)))
+    
+    
 fit_SOC_2 <- fit_SOC
 load('models/SOC_26.RData')
