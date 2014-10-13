@@ -15,11 +15,14 @@ test <- train_Ca[-index,]
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='BT',complete=T))
+                           adaptive=list(min=12,alpha=.05,method='BT',complete=T),seeds=seeds)
 #  ,adaptive=list(min=12,alpha=.05,method='BT',complete=T))
-
-fit_Ca_2 <- train(Ca~.,data=train[,-c(3555:3570)], method='svmRadial',trControl = fitControl,
-                  tuneLength=10,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+set.seed(888)
+seeds <- vector(mode = "list", length = 101)
+for(i in 1:100) seeds[[i]] <- sample.int(1000, 22)
+seeds[[101]] <- sample.int(1000, 1)
+fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
+                  tuneLength=12,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet), [,-c(3555:3570)]
 
