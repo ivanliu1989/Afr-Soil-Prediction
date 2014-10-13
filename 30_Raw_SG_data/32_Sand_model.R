@@ -18,7 +18,7 @@ fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 #  ,adaptive=list(min=12,alpha=.05,method='BT',complete=T))
 
-fit_Sand_3 <- train(Sand~.,data=train, method='enet',trControl = fitControl,
+fit_Sand <- train(Sand~.,data=train, method='gbm',trControl = fitControl,
                   tuneLength=8,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet)

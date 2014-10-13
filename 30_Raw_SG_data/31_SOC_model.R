@@ -24,8 +24,9 @@ fit_Sand <- train(Sand~.,data=train, method='gbm',trControl = fitControl,
 
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
 SOC<- predict(fit_SOC, test_SOC)
-head(submit$SOC); head(SOC)
-
+head(submit$Sand); head(Sand)
+submit$Sand <- Sand
+write.csv(submit, 'submission_new/OCT13.csv', row.names=F)
 
 ### e1071 ###
 require(e1071)
@@ -53,7 +54,7 @@ fit_Sand_svm_tune <- best.tune(svm, x=x, y=y, tunecontrol=tuneControl,
                                ranges=list(gamma = 2^(-1:1),cost=2^(2:4)))
     
 
-Sand <- predict(fit_Sand_svm, test[,-1])
+Sand <- predict(fit_Sand, test_Sand)
 rmse(Sand,test$Sand)
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
 head(submit$Sand); head(Sand)
