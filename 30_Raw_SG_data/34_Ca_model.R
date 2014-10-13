@@ -26,7 +26,7 @@ fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet), [,-c(3555:3570)]
 
-Ca<- predict(fit_Ca, train)
+Ca<- predict(fit_Ca, test_Ca)
 rmse(Ca, train$Ca)
 
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
