@@ -5,7 +5,7 @@ require(caret); require(hydroGOF); require(parcor); require(prospectr)
 
 test_P <- test_SG
 test_P$Depth <- ifelse(test_P$Depth == 'Topsoil',1,0)
-train_P <- train_SG[,-c(5,2,3,4)] #,3559:3574
+train_P <- train_SG[,-c(1,2,5,4)] #,3559:3574
 train_P$Depth <- ifelse(train_P$Depth == 'Topsoil',1,0)
 index <- createDataPartition(train_P$P, p=.7, list=F)
 train <- train_P[index,]
