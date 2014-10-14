@@ -34,50 +34,15 @@ xtest_scaled = scaler.fit_transform(xtest)
 
 C_range = 10.0 ** np.arange(-2, 9)
 gamma_range = 10.0 ** np.arange(-5, 4)
-param_grid = dict(gamma=gamma_range, C=C_range)
+kernel_opt = ('linear', 'rbf')
+param_grid = dict(gamma=gamma_range, C=C_range, kernel=kernel_opt)
 cv = StratifiedKFold(y=labels[:,4], n_folds=5)
 grid = GridSearchCV(SVR(), param_grid=param_grid, cv=cv)
 grid.fit(xtrain, labels[:,4])
 
 print("The best classifier is: ", grid.best_estimator_)
 
-# Now we need to fit a classifier for all parameters in the 2d version
-# (we use a smaller set of parameters here because it takes a while to train)
-C_2d_range = [1, 1e2, 1e4]
-gamma_2d_range = [1e-1, 1, 1e1]
-classifiers = []
-for C in C_2d_range:
-    for gamma in gamma_2d_range:
-        clf = SVC(C=C, gamma=gamma)
-        clf.fit(X_2d, Y_2d)
-        classifiers.append((C, gamma, clf))
 
-##############################################################################
-# visualization
-#
-# draw visualization of parameter effects
-plt.figure(figsize=(8, 6))
-xx, yy = np.meshgrid(np.linspace(-5, 5, 200), np.linspace(-5, 5, 200))
-for (k, (C, gamma, clf)) in enumerate(classifiers):
-    # evaluate decision function in a grid
-    Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-
-    # visualize decision function for these parameters
-    plt.subplot(len(C_2d_range), len(gamma_2d_range), k + 1)
-    plt.title("gamma 10^%d, C 10^%d" % (np.log10(gamma), np.log10(C)),
-              size='medium')
-
-    # visualize parameter's effect on decision function
-    plt.pcolormesh(xx, yy, -Z, cmap=plt.cm.jet)
-    plt.scatter(X_2d[:, 0], X_2d[:, 1], c=Y_2d, cmap=plt.cm.jet)
-    plt.xticks(())
-    plt.yticks(())
-    plt.axis('tight')
-
-# plot the scores of the grid
-# grid_scores_ contains parameter settings and scores
-score_dict = grid.grid_scores_
 
 # We extract just the scores
 scores = [x[1] for x in score_dict]
