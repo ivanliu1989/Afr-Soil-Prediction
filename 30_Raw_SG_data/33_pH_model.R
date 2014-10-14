@@ -19,8 +19,8 @@ seeds[[101]] <- sample.int(1000, 1)
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",seeds=seeds,
-                           adaptive=list(min=12,alpha=.05,method='BT',complete=T))
-#  ,adaptive=list(min=12,alpha=.05,method='BT',complete=T))
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T))
+#  ,adaptive=list(min=12,alpha=.05,method='gls',complete=T))
 
 fit_pH <- train(pH~.,data=train_pH, method='svmRadial',trControl = fitControl,
                     tuneLength=8,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
