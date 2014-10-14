@@ -10,15 +10,20 @@ set.seed(888)
 y <- as.array(train_Sand[,1])
 x <- train_Sand[,-1]
 
+set.seed(888)
+seeds <- vector(mode = "list", length = 121)
+for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
+seeds[[121]] <- sample.int(1000, 1)
+
 fitGrid <- expand.grid(interaction.depth=c(8,9,10),n.trees=c(300,350,400,450,500),shrinkage=c(0.05,0.1))
-fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
+fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
                            summaryFunction = defaultSummary,
-                           returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='BT',complete=T)),
-                         #  adaptive=list(min=12,alpha=.05,method='BT',complete=T))
+                           returnResamp = "all", selectionFunction = "best",seeds=seeds,
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T)),
+                         #  adaptive=list(min=12,alpha=.05,method='gls',complete=T))
 
 fit_Sand <- train(Sand~.,data=train, method='gbm',trControl = fitControl,
-                  tuneLength=8,verbose=T,metric='RMSE',preProc = c('center', 'scale'), tuneGrid=fitGrid)
+                  tuneLength=21,verbose=T,metric='RMSE',preProc = c('center', 'scale'), tuneGrid=fitGrid)
 # tuneLength=12, 
 
 
