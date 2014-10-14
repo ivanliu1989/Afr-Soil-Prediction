@@ -59,10 +59,13 @@ fit_Sand_svm_tune <- best.tune(svm, x=x, y=y, tunecontrol=tuneControl,
                                ranges=list(gamma = 2^(-1:1),cost=2^(2:4)))
     
 
-Sand <- predict(fit_Sand, test_Sand)
+SOC <- predict(fit_SOC_tune, test_SOC)
 rmse(Sand,test$Sand)
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
-head(submit$Sand); head(Sand)
+head(submit$SOC); head(SOC)
 
 fit_SOC_2 <- fit_SOC
 load('models/SOC_26.RData')
+
+submit$SOC <- SOC
+write.csv(submit, file='submission_new/SOC_TUNE.csv', row.names=F)
