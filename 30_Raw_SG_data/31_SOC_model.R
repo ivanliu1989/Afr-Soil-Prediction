@@ -6,6 +6,9 @@ test_SOC <- test_SG
 test_SOC$Depth <- ifelse(test_SOC$Depth == 'Topsoil',1,0)
 train_SOC <- train_SG[,-c(1,2,3,5)] #,3559:3574
 train_SOC$Depth <- ifelse(train_SOC$Depth == 'Topsoil',1,0)
+index <- createDataPartition(train_SOC$SOC, p=.9, list=F)
+train <- train_SOC[index,]
+test <- train_SOC[-index,]
 set.seed(888)
 y <- as.array(train_Sand[,1])
 x <- train_Sand[,-1]
@@ -22,7 +25,7 @@ fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
                            adaptive=list(min=12,alpha=.05,method='gls',complete=T)),
                          #  adaptive=list(min=12,alpha=.05,method='gls',complete=T))
 
-fit_Sand <- train(Sand~.,data=train, method='gbm',trControl = fitControl,
+fit_SOC <- train(SOC~.,data=train, method='gbm',trControl = fitControl,
                   tuneLength=21,verbose=T,metric='RMSE',preProc = c('center', 'scale'), tuneGrid=fitGrid)
 # tuneLength=12, 
 
