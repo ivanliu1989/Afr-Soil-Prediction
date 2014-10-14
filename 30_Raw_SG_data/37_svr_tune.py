@@ -32,13 +32,13 @@ xtest_scaled = scaler.fit_transform(xtest)
 # 10 is often helpful. Using a basis of 2, a finer
 # tuning can be achieved but at a much higher cost.
 
-C_range = 10.0 ** np.arange(-2, 9)
-gamma_range = 10.0 ** np.arange(-5, 4)
+C_range = 10.0 ** np.arange(-2, 4)
+gamma_range = 10.0 ** np.arange(-8, 1)
 kernel_opt = ('linear', 'rbf')
 param_grid = dict(gamma=gamma_range, C=C_range, kernel=kernel_opt)
 cv = StratifiedKFold(y=labels[:,4], n_folds=5)
 grid = GridSearchCV(SVR(), param_grid=param_grid, cv=cv)
-grid.fit(xtrain, labels[:,4])
+grid.fit(xtrain_scaled, labels[:,4])
 
 print("The best classifier is: ", grid.best_estimator_)
 

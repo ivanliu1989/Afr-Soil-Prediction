@@ -23,7 +23,7 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 
-fit_Ca <- train(Ca~.,data=train_Ca, method='brnn',trControl = fitControl,
+fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
                   tuneLength=21,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet), [,-c(3555:3570)], brnn
