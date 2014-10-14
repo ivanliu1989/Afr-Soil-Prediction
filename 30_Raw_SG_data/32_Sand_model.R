@@ -23,8 +23,8 @@ fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
                            adaptive=list(min=12,alpha=.05,method='gls',complete=T))
 #  ,adaptive=list(min=12,alpha=.05,method='gls',complete=T))
 
-fit_Sand_2 <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
-                  tuneLength=21,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+fit_Sand <- train(Sand~.,data=train, method='svmRadial',trControl = fitControl,
+                  tuneLength=17,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet)
 

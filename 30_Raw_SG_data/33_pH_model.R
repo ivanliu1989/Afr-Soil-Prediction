@@ -24,7 +24,7 @@ fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
 #  ,adaptive=list(min=12,alpha=.05,method='gls',complete=T))
 
 fit_pH <- train(pH~.,data=train_pH, method='svmRadial',trControl = fitControl,
-                    tuneLength=21,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                    tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet)
 
@@ -33,3 +33,5 @@ rmse(pH, train$pH)
 
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
 head(submit$pH); head(pH)
+
+save(fit_pH,file='models/pH.RData')

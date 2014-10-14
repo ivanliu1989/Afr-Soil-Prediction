@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 load('data/Savitzky-Golay-Data.RData')
 load('models/SOC_26.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
@@ -23,15 +23,17 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 
-fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
+fit_Ca_2 <- train(Ca~.,data=train, method='svmRadial',trControl = fitControl,
                   tuneLength=21,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 # tuneLength=12, tuneGrid=fitGrid
 # enet (elasticnet), [,-c(3555:3570)], brnn
 
-Ca<- predict(fit_Ca, test_Ca)
-rmse(Ca, train_Ca$Ca)
+Ca<- predict(fit_Ca_2, train)
+rmse(Ca, train$Ca)
 
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
 head(submit$Ca); head(Ca)
 submit$Ca <- Ca
 write.csv(submit, 'submission_new/13OCT_pm.csv', row.names=F)
+
+save(fit_Ca,file='models/Ca.RData')
