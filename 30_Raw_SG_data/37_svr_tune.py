@@ -4,7 +4,6 @@ import pandas as pd
 
 from sklearn.svm import SVR
 from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import load_iris
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.grid_search import GridSearchCV
 
