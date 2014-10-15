@@ -104,4 +104,4 @@ submit$Ca <- Ca
 submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
-write.csv(submit, 'submission_new/raw_Model_15_OCT.csv', row.names=F)
+write.csv(submit, 'submission_new/SG_Model_16_OCT.csv', row.names=F)
