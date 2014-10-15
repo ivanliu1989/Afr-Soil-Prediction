@@ -56,3 +56,5 @@ fit_P_2 <- train(P_log~.,data=train_P2[,-1], method='svmRadial',trControl = fitC
 P_log <- predict(fit_P, test_P)
 P2_log <- predict(fit_P_2, test_P2)
 rmse(P2_log, test_P2$P_log)
+P2 <- raw_trans(P2_log)
+rmse(P2, test_P2$P)
