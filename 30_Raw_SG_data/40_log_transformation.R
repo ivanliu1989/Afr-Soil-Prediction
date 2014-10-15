@@ -21,10 +21,11 @@ raw_trans <- function(log_P){
 ############
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 load('data/Savitzky-Golay-Data.RData')
+load('data/88_data.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 
 ### P ###
-test_P <- test_SG
+test_P <- test
 test_P$Depth <- ifelse(test_P$Depth == 'Topsoil',1,0)
 train_P <- train_SG[,-c(1,2,5,4)] #,3559:3574
 train_P$Depth <- ifelse(train_P$Depth == 'Topsoil',1,0)
