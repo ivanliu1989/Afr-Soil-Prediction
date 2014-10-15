@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 load('data/Savitzky-Golay-Data.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 ### Sand ###
@@ -47,10 +47,10 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 ### Model prepare ###
-fitControl <- trainControl(method="adaptive_cv", number=12, repeats=5,
+fitControl <- trainControl(method="adaptive_cv", number=10, repeats=5,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=8,alpha=.05,method='gls',complete=F)),seeds=seeds
+                           adaptive=list(min=8,alpha=.05,method='gls',complete=F),seeds=seeds)
 ### Model_Sand ###
 fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=17,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
