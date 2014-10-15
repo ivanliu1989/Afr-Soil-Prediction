@@ -1,4 +1,4 @@
-setwd('H:\\Machine Learning\\Afr-Soil-Prediction\\')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 load('data/Savitzky-Golay-Data.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 ### Sand ###
@@ -43,15 +43,14 @@ train_SOC2 <- train_SOC[index_SOC,]
 test_SOC2 <- train_SOC[-index_SOC,]
 ### set.seeds ###
 set.seed(888)
-seeds <- vector(mode = "list", length save(fit_Sand,file='models/SOC.RData')
-= 121)
+seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 ### Model prepare ###
-fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
+fitControl <- trainControl(method="adaptive_cv", number=12, repeats=5,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
+                           adaptive=list(min=8,alpha=.05,method='gls',complete=F)),seeds=seeds
 ### Model_Sand ###
 fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=17,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
@@ -68,10 +67,10 @@ fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
 fit_Ca_2 <- train(Ca~.,data=train_Ca2, method='svmRadial',trControl = fitControl,
                   tuneLength=17,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_P ###
-fit_P <- train(P~.,data=train_P, method='svmRadial',trControl = fitControl,
+fit_P <- train(P~.,data=train_P, method='svmPoly',trControl = fitControl,
                tuneLength=17,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-fit_P_2 <- train(P~.,data=train_P2, method='svmRadial',trControl = fitControl,
-                 tuneLength=17,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+fit_P_2 <- train(P~.,data=train_P2, method='svmPoly',trControl = fitControl,
+                 tuneLength=8,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 save(fit_P,file='models/P.RData')
 ### Model_SOC ###
 fit_SOC <- train(SOC~.,data=train_SOC, method='svmRadial',trControl = fitControl,
