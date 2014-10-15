@@ -19,13 +19,13 @@ raw_trans <- function(log_P){
 ############
 ### Test ###
 ############
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 load('data/Savitzky-Golay-Data.RData')
-load('data/88_data.RData')
+# load('data/88_data.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 
 ### P ###
-test_P <- test
+test_P <- test_SG
 test_P$Depth <- ifelse(test_P$Depth == 'Topsoil',1,0)
 train_P <- train_SG[,-c(1,2,5,4)] #,3559:3574
 train_P$Depth <- ifelse(train_P$Depth == 'Topsoil',1,0)
@@ -44,7 +44,7 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 ### Model prepare ###
-fitControl <- trainControl(method="adaptive_cv", number=4, repeats=10,
+fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=12,alpha=.05,method='gls',complete=F),seeds=seeds)
@@ -57,5 +57,10 @@ fit_P_2 <- train(P_log~.,data=train_P2[,-1], method='svmRadial',trControl = fitC
 P_log <- predict(fit_P, test_P)
 P2_log <- predict(fit_P_2, test_P2)
 rmse(P2_log, test_P2$P_log)
-P2 <- raw_trans(P2_log)
-rmse(P2, test_P2$P)
+P <- raw_trans(P_log)
+rmse(P, train_P$P)
+
+submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
+head(submit$P); head(P)
+submit$P <- P
+write.csv(submit, 'submission_new/P_Model_15_OCT.csv', row.names=F)

@@ -4,7 +4,7 @@ require(caret); require(hydroGOF); require(parcor); require(prospectr)
 ### Sand ###
 test_Sand <- test
 test_Sand$Depth <- ifelse(test_Sand$Depth == 'Topsoil',1,0)
-train_Sand <- train[,-c(1,2,3,4)] #,3559:3574
+train_Sand <- train[,-c(3580:3583)] #,3559:3574
 train_Sand$Depth <- ifelse(train_Sand$Depth == 'Topsoil',1,0)
 index_Sand <- createDataPartition(train_Sand$Sand, p=.9, list=F)
 train_Sand2 <- train_Sand[index_Sand,]
@@ -12,7 +12,7 @@ test_Sand2 <- train_Sand[-index_Sand,]
 ### pH ###
 test_pH <- test
 test_pH$Depth <- ifelse(test_pH$Depth == 'Topsoil',1,0)
-train_pH <- train[,-c(1,5,3,4)] #,3559:3574
+train_pH <- train[,-c(3580,3581,3583,3584)] #,3559:3574
 train_pH$Depth <- ifelse(train_pH$Depth == 'Topsoil',1,0)
 index_pH <- createDataPartition(train_pH$pH, p=.9, list=F)
 train_pH2 <- train_pH[index_pH,]
@@ -20,7 +20,7 @@ test_pH2 <- train_pH[-index_pH,]
 ### Ca ###
 test_Ca <- test
 test_Ca$Depth <- ifelse(test_Ca$Depth == 'Topsoil',1,0)
-train_Ca <- train[,-c(5,2,3,4)] #,3559:3574
+train_Ca <- train[,-c(3581:3584)] #,3559:3574
 train_Ca$Depth <- ifelse(train_Ca$Depth == 'Topsoil',1,0)
 index_Ca <- createDataPartition(train_Ca$Ca, p=.9, list=F)
 train_Ca2 <- train_Ca[index_Ca,]
@@ -28,7 +28,7 @@ test_Ca2 <- train_Ca[-index_Ca,]
 ### P ###
 test_P <- test
 test_P$Depth <- ifelse(test_P$Depth == 'Topsoil',1,0)
-train_P <- train[,-c(1,2,5,4)] #,3559:3574
+train_P <- train[,-c(3580,3582:3584)] #,3559:3574
 train_P$Depth <- ifelse(train_P$Depth == 'Topsoil',1,0)
 index_P <- createDataPartition(train_P$P, p=.9, list=F)
 train_P2 <- train_P[index_P,]
@@ -36,7 +36,7 @@ test_P2 <- train_P[-index_P,]
 ### SOC ###
 test_SOC <- test
 test_SOC$Depth <- ifelse(test_SOC$Depth == 'Topsoil',1,0)
-train_SOC <- train[,-c(1,2,3,5)] #,3559:3574
+train_SOC <- train[,-c(3580:3582,3584)] #,3559:3574
 train_SOC$Depth <- ifelse(train_SOC$Depth == 'Topsoil',1,0)
 index_SOC <- createDataPartition(train_SOC$SOC, p=.9, list=F)
 train_SOC2 <- train_SOC[index_SOC,]
@@ -47,7 +47,7 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 ### Model prepare ###
-fitControl <- trainControl(method="adaptive_cv", number=12, repeats=10,
+fitControl <- trainControl(method="adaptive_cv", number=10, repeats=5,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
