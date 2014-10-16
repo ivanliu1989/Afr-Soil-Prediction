@@ -51,7 +51,7 @@ seeds[[121]] <- sample.int(1000, 1)
 fitControl <- trainControl(method="adaptive_cv", number=4, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=20,alpha=.05,method='gls',complete=F),seeds=seeds)
+                           adaptive=list(min=20,alpha=.05,method='gls',complete=T),seeds=seeds)
 ### Model_Sand ###
 fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
@@ -106,3 +106,4 @@ submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
 write.csv(submit, 'submission_new/Sand_Model_16_OCT.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101701_Savitzky-Golay-Filted.RData')
