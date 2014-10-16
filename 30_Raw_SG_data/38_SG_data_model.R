@@ -1,4 +1,4 @@
-setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 load('data/Savitzky-Golay-Data.RData')
 load('data/Savitzky-Golay-Data-Filtered.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)

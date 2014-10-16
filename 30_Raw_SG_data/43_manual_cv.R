@@ -1,12 +1,12 @@
-library(caret);
-library(e1071);
-set.seed(25);
-trainingdata <- read.csv("training.csv");
-testdata <- read.csv("test.csv");
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+load('data/Savitzky-Golay-Data.RData')
+load('data/Savitzky-Golay-Data-Filtered.RData')
+library(caret);library(e1071);
+set.seed(888);
+trainingdata <- train_SG;
+testdata <- test_SG;
 soil_properties <- c("Ca", "P", "pH", "SOC", "Sand");
-trainingdata = trainingdata[,-c(2656:2670)];
-testdata = testdata[,-c(2656:2670)];
-train = trainingdata[,2:(ncol(trainingdata)-5)];
+train = trainingdata;
 test = testdata;
 train$Depth <- with ( train, ifelse ( ( Depth == 'Subsoil' ), 0 , 1 ) );
 test$Depth <- with ( test, ifelse ( ( Depth == 'Subsoil' ), 0 , 1 ) );
