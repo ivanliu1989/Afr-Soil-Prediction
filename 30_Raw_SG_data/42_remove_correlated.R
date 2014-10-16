@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 load('data/Savitzky-Golay-Data.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 test <- test_SG
@@ -33,7 +33,7 @@ non_all[, -comboInfo$remove]
 dim(filteredDescr)
 train_SG <- cbind(train[,-index_train], filteredDescr[1:1157,])
 test_SG <- cbind(test[,-index_test], filteredDescr[1158:1884,])
-dim(train_filtered);dim(test_filtered)
+dim(train_SG);dim(test_SG)
 save(train_SG,test_SG, file='data/Savitzky-Golay-Data-Filtered.RData')
 
 ### Combine Raw ###
