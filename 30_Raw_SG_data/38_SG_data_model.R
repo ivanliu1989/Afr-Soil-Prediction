@@ -105,5 +105,5 @@ submit$Ca <- Ca
 submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
-write.csv(submit, 'submission_new/Sand_Model_16_OCT.csv', row.names=F)
-save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101701_Savitzky-Golay-Filted.RData')
+write.csv(submit, 'submission_new/2014101702_Savitzky-Golay.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101702_Savitzky-Golay.RData')
