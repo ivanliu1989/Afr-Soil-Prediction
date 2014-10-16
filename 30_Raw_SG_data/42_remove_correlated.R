@@ -27,4 +27,11 @@ summary(descrCor2[upper.tri(descrCor2)])
 ### Linear Dependencies ###
 comboInfo <- findLinearCombos(non_all)
 comboInfo
-ltfrDesign[, -comboInfo$remove]
+non_all[, -comboInfo$remove]
+
+### Combine ###
+dim(filteredDescr)
+train_SG <- cbind(train[,-index_train], filteredDescr[1:1157,])
+test_SG <- cbind(test[,-index_test], filteredDescr[1158:1884,])
+dim(train_filtered);dim(test_filtered)
+save(train_SG,test_SG, file='data/Savitzky-Golay-Data-Filtered.RData')
