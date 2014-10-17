@@ -51,32 +51,32 @@ seeds[[121]] <- sample.int(1000, 1)
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=20,alpha=.05,method='gls',complete=T),seeds=seeds)
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
 ### Model_Sand ###
 fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
-                  tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 fit_Sand_2 <- train(Sand~.,data=train_Sand2, method='svmRadial',trControl = fitControl,
-                    tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                    tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_pH ###
 fit_pH <- train(pH~.,data=train_pH, method='svmRadial',trControl = fitControl,
-                tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 fit_pH_2 <- train(pH~.,data=train_pH2, method='svmRadial',trControl = fitControl,
-                  tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_Ca ###
 fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
-                tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 fit_Ca_2 <- train(Ca~.,data=train_Ca2, method='svmRadial',trControl = fitControl,
-                  tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_P ###
 fit_P <- train(P~.,data=train_P, method='svmRadial',trControl = fitControl,
-               tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+               tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 fit_P_2 <- train(P~.,data=train_P2, method='svmRadial',trControl = fitControl,
-                 tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                 tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_SOC ###
 fit_SOC <- train(SOC~.,data=train_SOC, method='svmRadial',trControl = fitControl,
-                 tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                 tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 fit_SOC_2 <- train(SOC~.,data=train_SOC2, method='svmRadial',trControl = fitControl,
-                   tuneLength=18,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Pred_Sand ###
 Sand <- predict(fit_Sand, test_Sand)
 Sand2 <- predict(fit_Sand_2, test_Sand2)
@@ -105,5 +105,5 @@ submit$Ca <- Ca
 submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
-write.csv(submit, 'submission_new/2014101702_Savitzky-Golay.csv', row.names=F)
-save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101702_Savitzky-Golay.RData')
+write.csv(submit, 'submission_new/2014101703_Savitzky-Golay.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101703_Savitzky-Golay.RData')
