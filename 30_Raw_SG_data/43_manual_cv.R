@@ -13,7 +13,7 @@ test$Depth <- with ( test, ifelse ( ( Depth == 'Subsoil' ), 0 , 1 ) );
 pred_cols = trainingdata[, soil_properties];
 
 #now just change the p_var to some of the soil properties
-p_var = "Ca";
+p_var = "Sand";
 folds = createFolds(pred_cols[,p_var],k=10);
 fold_rmse = rep(0,10);
 avg_rmse = 0;
@@ -23,7 +23,7 @@ for(i in 1:length(folds)){
     g_test = train[smpl,];
     g_y = pred_cols[-smpl,p_var];
     g_y_test = pred_cols[smpl,p_var];
-    m2 = svm(x=as.matrix(g_train),y=g_y,scale=T,kernel="radial",cost=36);
+    m2 = svm(x=as.matrix(g_train),y=g_y,scale=T,kernel="radial",cost=32);
     m2.pred = predict(m2,newdata=g_test,type="response");
     fold_rmse[i]=rmse(m2.pred, g_y_test);
 }
@@ -31,6 +31,28 @@ mean(fold_rmse);
 sd(fold_rmse);
 
 # Ca 36 Radial noScale (0.048/0.009)
-# Ca 36 Radial Scale (0.048/0.009)
-# Ca 36 Linear noScale ()
-# Ca 36 Linear Scale ()
+# Ca 36 Radial Scale (0.266/0.097)
+# Ca 36 Linear noScale (0.0397/0.003) # Ca 16 Linear noScale (0.0395/0.004)
+# Ca 36 Linear Scale (0.167/0.051) # Ca 16 Linear Scale (0.1806/0.071)
+
+# P 36 Radial noScale (0.079/0.008)
+# P 36 Radial Scale (0.594/0.251)
+# P 36 Linear noScale (0.071/0.005)
+# P 36 Linear Scale (0.122/0.014)
+
+# pH 36 Radial noScale (0.052/0.004)
+# pH 36 Radial Scale (0.304/0.039)
+# pH 36 Linear noScale (0.043/0.003)
+# pH 36 Linear Scale (0.116/0.010)
+
+# SOC 36 Radial noScale (0.063/0.007)
+# SOC 36 Radial Scale (0.372/0.188)
+# SOC 36 Linear noScale (0.060/0.004)
+# SOC 36 Linear Scale (0.161/0.031)
+
+# Sand 36 Radial noScale (0./0.)
+# Sand 36 Radial Scale (0.311/0.052)
+# Sand 36 Linear noScale (0./0.)
+# Sand 36 Linear Scale (0./0.)
+
+
