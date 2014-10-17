@@ -1,5 +1,6 @@
 setwd('H:\\Machine Learning\\Afr-Soil-Prediction\\')
 load('data/Savitzky-Golay-Data.RData')
+
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 
 test_SOC <- test_SG

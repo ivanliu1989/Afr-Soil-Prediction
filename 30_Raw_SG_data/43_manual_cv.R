@@ -13,7 +13,7 @@ test$Depth <- with ( test, ifelse ( ( Depth == 'Subsoil' ), 0 , 1 ) );
 pred_cols = trainingdata[, soil_properties];
 
 #now just change the p_var to some of the soil properties
-p_var = "Sand";
+p_var = "Ca";
 folds = createFolds(pred_cols[,p_var],k=10);
 fold_rmse = rep(0,10);
 avg_rmse = 0;
@@ -23,13 +23,14 @@ for(i in 1:length(folds)){
     g_test = train[smpl,];
     g_y = pred_cols[-smpl,p_var];
     g_y_test = pred_cols[smpl,p_var];
-    m2 = svm(x=as.matrix(g_train),y=g_y,scale=T,kernel="radial",cost=32);
+    m2 = svm(x=as.matrix(g_train),y=g_y,scale=T,kernel="linear",cost=50);
     m2.pred = predict(m2,newdata=g_test,type="response");
     fold_rmse[i]=rmse(m2.pred, g_y_test);
 }
 mean(fold_rmse);
 sd(fold_rmse);
 
+fit <- svm(x=as.matrix(train[,-c(1:5)]),y=pred_cols$Ca,scale=T,kernel="linear",cost=50)
 # Ca 36 Radial noScale (0.048/0.009)
 # Ca 36 Radial Scale (0.266/0.097)
 # Ca 36 Linear noScale (0.0397/0.003) # Ca 16 Linear noScale (0.0395/0.004)
@@ -55,4 +56,14 @@ sd(fold_rmse);
 # Sand 36 Linear noScale (0./0.)
 # Sand 36 Linear Scale (0./0.)
 
-
+Ca <- predict(m2, test[,-1])
+### SAVE file ###
+submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
+head(submit); head(Sand); head(pH); head(Ca); head(SOC); head(P)
+submit$Sand <- Sand
+submit$Ca <- Ca
+submit$P <- P
+submit$pH <- pH
+submit$SOC <- SOC
+write.csv(submit, 'submission_new/2014101703_Savitzky-Golay_Ca.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101703_Savitzky-Golay.RData')

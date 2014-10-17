@@ -51,7 +51,7 @@ seeds[[121]] <- sample.int(1000, 1)
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T)),seeds=seeds)
 ### Model_Sand ###
 fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
