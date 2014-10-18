@@ -1,6 +1,6 @@
 setwd('H:\\Machine Learning\\Afr-Soil-Prediction\\')
 load('data/45_Raw_Data.RData')
-load('models/models_02Oct2014.RData')
+load('models/models_02Oct2014.RData');load('models/SOC_26.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
 train_SG <- train_raw
 test_SG <- test_raw
