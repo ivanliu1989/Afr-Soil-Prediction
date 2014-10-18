@@ -60,7 +60,7 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 ### Model prepare ###
-fitControl <- trainControl(method="adaptive_cv", number=10, repeats=5,
+fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
@@ -102,7 +102,7 @@ Ca <- predict(fit_Ca, test_Ca)
 Ca2 <- predict(fit_Ca_2, test_Ca2)
 rmse(Ca2, test_Ca2$Ca)
 ### Pred_P ###
-P <- predict(fit_P_svm_pre, test_P)
+P <- predict(fit_P_2, test_P)
 P2 <- predict(fit_P_2, test_P2)
 rmse(P2, test_P2$P)
 ### Pred_SOC ###
