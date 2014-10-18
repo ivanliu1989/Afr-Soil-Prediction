@@ -106,4 +106,5 @@ submit$Ca <- Ca
 submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
-write.csv(submit, 'submission_new/SG_Model_16_OCT.csv', row.names=F)
+write.csv(submit, 'submission_new/2014101801_Raw-Data.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101801_Raw-Data.RData')
