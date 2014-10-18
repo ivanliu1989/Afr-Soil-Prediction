@@ -1,3 +1,4 @@
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 library(caret);
 library(e1071);require(hydroGOF); require(parcor); require(prospectr)
 set.seed(25);
