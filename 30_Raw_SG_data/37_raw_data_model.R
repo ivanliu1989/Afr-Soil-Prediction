@@ -117,8 +117,8 @@ submit$Ca <- Ca
 submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
-write.csv(submit, 'submission_new/2014101802_Raw-Data_Sand.csv', row.names=F)
-save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101801_Raw-Data.RData')
+write.csv(submit, 'submission_new/2014101803_Raw-Data_factor.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101803_Raw-Data_factor.RData')
 
 ### plot ###
 plot((submit$Ca-Ca), type='l')

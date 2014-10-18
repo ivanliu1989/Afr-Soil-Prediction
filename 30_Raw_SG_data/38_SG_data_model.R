@@ -1,4 +1,4 @@
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 load('data/Savitzky-Golay-Data.RData')
 load('data/Savitzky-Golay-Data-Filtered.RData')
 require(caret); require(hydroGOF); require(parcor); require(prospectr)
@@ -51,7 +51,7 @@ seeds[[121]] <- sample.int(1000, 1)
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T)),seeds=seeds)
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
 ### Model_Sand ###
 fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
@@ -92,7 +92,7 @@ rmse(Ca2, test_Ca2$Ca)
 ### Pred_P ###
 P <- predict(fit_P, test_P)
 P2 <- predict(fit_P_2, test_P2)
-rmse(Sand2, test_Sand2$Sand)
+rmse(P2, test_P2$P)
 ### Pred_SOC ###
 SOC <- predict(fit_SOC, test_SOC)
 SOC2 <- predict(fit_SOC_2, test_SOC2)
@@ -107,3 +107,7 @@ submit$pH <- pH
 submit$SOC <- SOC
 write.csv(submit, 'submission_new/2014101703_Savitzky-Golay.csv', row.names=F)
 save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101703_Savitzky-Golay.RData')
+
+dim(test_SG)
+plot(as.matrix(test_SG)[1,-c(1,3555:3570)])
+plot(as.matrix(train_SG)[1,-c(1:5,3559:3574)])
