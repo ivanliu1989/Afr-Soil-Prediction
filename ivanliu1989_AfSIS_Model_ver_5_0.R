@@ -2,6 +2,7 @@
 ## Environment Setup ##
 #######################
 setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
+setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 rm(list=ls(all=TRUE));gc(reset=TRUE);par(mfrow=c(1,1))
 # require(randomForest);require(gbm);require(extraTrees);
 require(data.table);require(bit64);require(foreach);require(reshape)
@@ -17,7 +18,7 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
     location <- c('BSAN', 'BSAS', 'BSAV', 'CTI', 'ELEV', 'EVI', 'LSTD', 'LSTN',
                   'REF1', 'REF2', 'REF3', 'REF7', 'RELI', 'TMAP', 'TMFI', 'Depth')
     labels <- c("Ca", "P", "pH", "SOC", "Sand")
-    
+    par(mfcol=c(1,2))
     # df_train_sorted <- sort_df(df_train, location)
     # write.csv(df_train_sorted, "./data/sorted_training.csv", row.names=F)
     # df_test_sorted <- sort_df(df_test, location)
@@ -29,33 +30,37 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
     # take the Savitzky Golay to smoothe out the measurement noise
     # training data
     if(SavitzkyGolay==TRUE){
-        MIR_DER1_order1 <- savitzkyGolay(df_train[, 2:2655]), p = poly, w = windows, m = derivative)
-        MIR_DER2_order1 <- savitzkyGolay(df_train[, 2671:3579]), p = poly, w = windows, m = derivative)
+        MIR_DER1_order1 <- savitzkyGolay(df_train[, 2:2655], p = poly, w = windows, m = derivative)
+        MIR_DER2_order1 <- savitzkyGolay(df_train[, 2671:3579], p = poly, w = windows, m = derivative)
         X_train <- cbind(MIR_DER1_order1,
                          MIR_DER2_order1,
                          df_train[, 3580:3595])
+        plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
+             main = 'SavitzkyGolay-Train', col='blue')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
     }else{
         X_train <- df_train[, c(2:2655,2671:3595)]
     }
-    X_train$PIDN <- as.character(dfTrain$PIDN)
+    X_train$PIDN <- as.character(df_train$PIDN)
     X_train$Depth <- ifelse(X_train$Depth == 'Topsoil',1,0)
-    Y_train <- df_train[, soil_properties]
+    Y_train <- df_train[, labels]
     
     # testing data
     if(SavitzkyGolay==TRUE){
-        MIR_DER1_order1 <- savitzkyGolay(df_test[, 2:2655]), p = poly, w = windows, m = derivative)
-        MIR_DER2_order1 <- savitzkyGolay(df_test[, 2671:3579]), p = poly, w = windows, m = derivative)
+        MIR_DER1_order1 <- savitzkyGolay(df_test[, 2:2655], p = poly, w = windows, m = derivative)
+        MIR_DER2_order1 <- savitzkyGolay(df_test[, 2671:3579], p = poly, w = windows, m = derivative)
         X_test <- cbind(MIR_DER1_order1,
                         MIR_DER2_order1,
                         df_test[, 3580:3595])
+        plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
+             main = 'SavitzkyGolay-Test', col='red')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
     }else{
         X_test <- df_test[, c(2:2655,2671:3595)]
     }
-    X_test$PIDN <- as.character(dfTest$PIDN)
+    X_test$PIDN <- as.character(df_test$PIDN)
     X_test$Depth <- ifelse(X_test$Depth == 'Topsoil',1,0)
     
     PIDN_test <- data.frame(PIDN=X_test$PIDN)
@@ -155,3 +160,15 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
     
     return(list(X_train=X_train, X_test=X_test))
 }
+
+#########################
+## Model Configuration ##
+#########################
+## load original (diff) data
+SavitzkyGolay<-TRUE; derivative<-1; windows<-11; poly<-3
+data <- load_data(SavitzkyGolay, derivative, windows, poly)
+X_train <- data[["X_train"]]
+Y_train <- data[["Y_train"]]
+X_test <- data[["X_test"]]
+PIDN_test <- data[["PIDN_test"]]
+soil_properties <- c("Ca", "P", "pH", "SOC", "Sand")
