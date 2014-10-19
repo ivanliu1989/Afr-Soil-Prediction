@@ -43,7 +43,7 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
         X_train <- df_train[, c(2:2655,2671:3595)]
     }
     X_train$PIDN <- as.character(df_train$PIDN)
-    X_train$Depth <- ifelse(X_train$Depth == 'Topsoil',1,0)
+    X_train$Depth <- as.factor(X_train$Depth)
     Y_train <- df_train[, labels]
     
     # testing data
@@ -61,7 +61,7 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
         X_test <- df_test[, c(2:2655,2671:3595)]
     }
     X_test$PIDN <- as.character(df_test$PIDN)
-    X_test$Depth <- ifelse(X_test$Depth == 'Topsoil',1,0)
+    X_test$Depth <- as.factor(X_test$Depth)
     
     PIDN_test <- data.frame(PIDN=X_test$PIDN)
     return(list(X_train=X_train, Y_train=Y_train,
@@ -75,7 +75,7 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
     if(flag){
         location <- c('BSAN', 'BSAS', 'BSAV', 'CTI', 'ELEV', 'EVI', 'LSTD', 'LSTN',
                       'REF1', 'REF2', 'REF3', 'REF7', 'RELI', 'TMAP', 'TMFI', 'Depth')
-        df <- rbind(df_train, df_test) # all datasets
+        df <- rbind(dfTrain, dfTest) # all datasets
         #   print(table(df$PIDN)[table(df$PIDN)==2])
         Topsoil <- subset(df, Depth == 'Topsoil') # topsoil datasets
         Subsoil <- subset(df, Depth == 'Subsoil') # subsoil datasets
@@ -164,15 +164,84 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
 ######################
 ## Model Preparison ##
 ######################
-# bagging_gbm <- function(X_train, Y_train, X_test, log_transform, log_const,
-#                         bagging_iterations=10, bootstrap_method="row", bootstrap_replace=TRUE,
-#                         bootstrap_ratio=1.0, feat_ratio=1.0, seed=1234, plot.it=TRUE){}
-
-
-
-
-
-
+cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_method='svmRadial', 
+                   fit_metric='RMSE', cv_repeats=10, cv_numbers=10, fit_target,cv_method="row", 
+                   adaptiveMin=10, tune_Length=10, plot_it=TRUE){
+    
+    location <- c('BSAN', 'BSAS', 'BSAV', 'CTI', 'ELEV', 'EVI', 'LSTD', 'LSTN',
+                  'REF1', 'REF2', 'REF3', 'REF7', 'RELI', 'TMAP', 'TMFI')
+    LOC_train <- apply(X_train[,location], 1, function(x)paste(x,collapse="_"))
+    LOC_test <- apply(X_test[,location], 1, function(x)paste(x,collapse="_"))
+    LOC_train <- as.numeric(as.factor(LOC_train))
+    LOC_train_num <- length(unique(LOC_train))
+    
+    # apply log transform
+    if(log_transform){
+        Y_train2 <- log(Y_train[,fit_target] + log_const[fit_target])
+    }else{
+        Y_train2 <- Y_train[,fit_target]
+    }
+    
+    # training  
+    if(cv_method=="row"){
+        cat("Generate cross validation samples by ROW\n")
+    }else if(cv_method=="location"){
+        cat("Generate cross validation samples by LOCATION\n")
+    }
+    
+    # set.seeds
+    set.seed(888)
+    seeds <- vector(mode = "list", length = 101)
+    for(i in 1:100) seeds[[i]] <- sample.int
+    
+    # Cross validation
+    if(cv_method=="row"){
+        # sample row index
+        trainInd <- createMultiFolds(Y_train[,target],k=cv_numbers, times=cv_repeats);
+    }else if(cv_method=="location"){
+        # sample location index
+        trainInd <- createMultiFolds(LOC_train,k=cv_numbers, times=cv_repeats);
+        }
+    
+    # fit.control
+    fitControl <- trainControl(method="adaptive_cv", index = trainInd, summaryFunction = defaultSummary,
+                               returnResamp = "all", selectionFunction = "best",
+                               adaptive=list(min=adaptiveMin,alpha=.05,method='gls',complete=T))#,seeds=seeds)
+    
+    # train svm  
+    fit <- train(x=X_train,y=Y_train2, method=fit_method,trControl = fitControl,
+                 tuneLength=tune_Length,verbose=T,metric=fit_metric,preProc = c('center', 'scale'))
+    
+    # make prediction
+    y_pred <- predict(fit, newdata = X_train, type='response')
+    y_test <- predict(fit, newdata = X_test, type='response')
+    
+    # invert log transform
+    if(log_transform){      
+        y_pred <- exp(y_pred) - log_const
+        y_test <- exp(y_test) - log_const
+    }
+    
+    # plot the OOB predictions
+    if(plot_it){
+        y_true_oob <- Y_train[,fit_target]
+        y_pred_oob <- y_pred
+        RMSE_OOB <- rmse(y_true_oob, y_pred_oob)
+        par(mfrow=c(1,2))
+        axisRange <- extendrange(c(y_true_oob, y_pred_oob))
+        plot(y_true_oob, y_pred_oob,
+             xlim = axisRange, ylim = axisRange,
+             xlab="observed", ylab="predicted")
+        abline(0, 1, col="darkgrey", lty=2)
+        res <- y_true_oob - y_pred_oob
+        plot(y_pred_oob, res,
+             xlab="predicted", ylab="residuals")
+        abline(h=0, col="darkgrey", lty=2)
+    }
+    
+    # return prediction
+    return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB))
+}
 
 
 ######################
@@ -191,8 +260,8 @@ soil_properties <- c("Ca", "P", "pH", "SOC", "Sand")
 data <- preprocess_data(X_train, X_test, FALSE)
 X_train <- data[["X_train"]]
 X_test <- data[["X_test"]]
-# X_train$Depth <- ifelse(X_train$Depth=='Topsoil', 0, 1)
-# X_test$Depth <- ifelse(X_test$Depth=='Topsoil', 0, 1)
+X_train$Depth <- ifelse(X_train$Depth=='Topsoil', 0, 1)
+X_test$Depth <- ifelse(X_test$Depth=='Topsoil', 0, 1)
 predictors <- names(X_train)
 rm(list=c("data"))
 gc(reset=TRUE)
@@ -216,3 +285,17 @@ names(log_const) <- soil_properties
 #########################
 ## Model Configuration ##
 #########################
+fit_target <- 'P'
+log_transform[fit_target];log_const
+fit_method <- 'svmRadial'
+fit_metric <- 'RMSE' 
+cv_repeats <- 10
+cv_numbers <- 10
+cv_method <- 'location' # row, location
+adaptiveMin <- 9
+tune_Length <- 10
+plot_it <- TRUE
+fit_P <- cv_svm(X_train, Y_train, X_test, log_transform=TRUE, log_const=log_const,fit_method=fit_method,
+                fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers, 
+                fit_target = fit_target, cv_method=cv_method, adaptiveMin=adaptiveMin, 
+                tune_Length=tune_Length, plot_it=plot_it)

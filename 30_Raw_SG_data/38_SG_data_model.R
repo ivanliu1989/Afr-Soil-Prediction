@@ -51,32 +51,32 @@ seeds[[121]] <- sample.int(1000, 1)
 fitControl <- trainControl(method="adaptive_cv", number=10, repeats=5,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T)),seeds=seeds)
 ### Model_Sand ###
 fit_Sand <- train(x=X_train,y=Y_train$Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-fit_Sand_2 <- train(Sand~.,data=train_Sand2, method='svmRadial',trControl = fitControl,
-                    tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+# fit_Sand_2 <- train(Sand~.,data=train_Sand2, method='svmRadial',trControl = fitControl,
+#                     tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_pH ###
-fit_pH <- train(pH~.,data=train_pH, method='svmRadial',trControl = fitControl,
+fit_pH <- train(x=X_train,y=Y_train$pH, method='svmRadial',trControl = fitControl,
                 tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-fit_pH_2 <- train(pH~.,data=train_pH2, method='svmRadial',trControl = fitControl,
-                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+# fit_pH_2 <- train(pH~.,data=train_pH2, method='svmRadial',trControl = fitControl,
+#                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_Ca ###
-fit_Ca <- train(Ca~.,data=train_Ca, method='svmRadial',trControl = fitControl,
+fit_Ca <- train(x=X_train,y=Y_train$Ca, method='svmRadial',trControl = fitControl,
                 tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-fit_Ca_2 <- train(Ca~.,data=train_Ca2, method='svmRadial',trControl = fitControl,
-                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+# fit_Ca_2 <- train(Ca~.,data=train_Ca2, method='svmRadial',trControl = fitControl,
+#                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_P ###
-fit_P <- train(P~.,data=train_P, method='svmRadial',trControl = fitControl,
+fit_P <- train(x=X_train,y=Y_train$P, method='svmRadial',trControl = fitControl,
                tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-fit_P_2 <- train(P~.,data=train_P2, method='svmRadial',trControl = fitControl,
-                 tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+# fit_P_2 <- train(P~.,data=train_P2, method='svmRadial',trControl = fitControl,
+#                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Model_SOC ###
-fit_SOC <- train(SOC~.,data=train_SOC, method='svmRadial',trControl = fitControl,
+fit_SOC <- train(x=X_train,y=Y_train$SOC, method='svmRadial',trControl = fitControl,
                  tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-fit_SOC_2 <- train(SOC~.,data=train_SOC2, method='svmRadial',trControl = fitControl,
-                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+# fit_SOC_2 <- train(SOC~.,data=train_SOC2, method='svmRadial',trControl = fitControl,
+#                    tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 ### Pred_Sand ###
 Sand <- predict(fit_Sand, test_Sand)
 Sand2 <- predict(fit_Sand_2, test_Sand2)
