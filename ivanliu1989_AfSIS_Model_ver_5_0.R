@@ -195,7 +195,7 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
 ######################
 cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_method='svmRadial', 
                    fit_metric='RMSE', cv_repeats=10, cv_numbers=10, fit_target,cv_method="row", 
-                   adaptiveMin=10, tune_Length=10, plot_it=TRUE){
+                   adaptiveMin=10, tune_Length=10, plot_it=TRUE, adaptiveMethod = 'BT'){
     
     location <- c('BSAN', 'BSAS', 'BSAV', 'CTI', 'ELEV', 'EVI', 'LSTD', 'LSTN',
                   'REF1', 'REF2', 'REF3', 'REF7', 'RELI', 'TMAP', 'TMFI')
@@ -235,7 +235,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     # fit.control
     fitControl <- trainControl(method="adaptive_cv", index = trainInd, summaryFunction = defaultSummary,
                                returnResamp = "all", selectionFunction = "best",
-                               adaptive=list(min=adaptiveMin,alpha=.05,method='gls',complete=T),
+                               adaptive=list(min=adaptiveMin,alpha=.05,method=adaptiveMethod,complete=T),
                                seeds=NULL, allowParallel=TRUE)
     
     # train svm  
@@ -327,6 +327,7 @@ cv_method <- 'location' # row, location
 adaptiveMin <- 9
 tune_Length <- 10
 plot_it <- TRUE
+adaptiveMethod <- 'BT' # BT/gls
 p_train <- c()
 fit_all <-list()
 p_test <- c()
@@ -344,7 +345,7 @@ for (P_var in soil_properties){
     fit_svm <- cv_svm(X_train, Y_train, X_test, log_transform=TRUE, log_const=log_const,fit_method=fit_method,
                   fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers,
                   fit_target = P_var, cv_method=cv_method, adaptiveMin=adaptiveMin,
-                  tune_Length=tune_Length, plot_it=plot_it)
+                  tune_Length=tune_Length, plot_it=plot_it, adaptiveMethod=adaptiveMethod)
     fit_all[[P_var]] <- fit_svm[['fit']]
     p_train <- cbind(p_train, fit_svm[["y_pred"]])
     p_test <- cbind(p_test,fit_svm[["y_test"]])
