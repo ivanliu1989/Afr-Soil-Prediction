@@ -218,8 +218,8 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     
     # invert log transform
     if(log_transform){      
-        y_pred <- exp(y_pred) - log_const
-        y_test <- exp(y_test) - log_const
+        y_pred <- exp(y_pred) - log_const[fit_target]
+        y_test <- exp(y_test) - log_const[fit_target]
     }
     
     # plot the OOB predictions
@@ -243,6 +243,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB, fit=fit))
 }
 
+###############################################################################################################
 
 ######################
 ## Model Preparison ##
@@ -294,11 +295,16 @@ cv_method <- 'location' # row, location
 adaptiveMin <- 9
 tune_Length <- 10
 plot_it <- TRUE
+p_train <- c()
+fit_all <-list()
+p_test <- c()
+RMSE_OOB <- c()
 
 ####################
 ## Model Training ##
 ####################
-for (P_var in soil_propeties){
+for (P_var in soil_properties){
+    p_train <- cbind(p_train, c(1:15)) }
     fit_target <- soil_properties[P_var]
     cat("\n-----------------------------\n")
     cat("Train for target: ", fit_target, "\n", sep="")      
@@ -307,10 +313,10 @@ for (P_var in soil_propeties){
                   fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers,
                   fit_target = fit_target, cv_method=cv_method, adaptiveMin=adaptiveMin,
                   tune_Length=tune_Length, plot_it=plot_it)
-    fit_all[P_var] <- fit_svm[['fit']]
-    p_train[P_var] <- fit_svm[["y_pred"]]
-    p_test[P_var] <- fit_svm[["y_test"]]
-    RMSE_OOB[P_var] <- fit_svm[["RMSE_OOB"]]
+    fit_all[[P_var]] <- fit_svm[['fit']]
+    p_train <- cbind(p_train, fit_svm[["y_pred"])
+    p_test <- cbind(p_test,fit_svm[["y_test"]])
+    RMSE_OOB <- cbind(RMSE_OOB, fit_svm[["RMSE_OOB"]])
 }
 p_test
 p_train
@@ -329,22 +335,6 @@ fileName <- paste(
     ".csv", sep="")
 
 write.csv(p_test, fileName, row.names=FALSE)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
