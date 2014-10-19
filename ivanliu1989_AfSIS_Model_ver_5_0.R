@@ -249,7 +249,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-SavitzkyGolay<-TRUE; derivative<-1; windows<-11; poly<-3
+SavitzkyGolay<-TRUE; derivative<-2; windows<-11; poly<-3
 data <- load_data(SavitzkyGolay, derivative, windows, poly)
 X_train <- data[["X_train"]]
 Y_train <- data[["Y_train"]]
@@ -304,17 +304,16 @@ RMSE_OOB <- c()
 ## Model Training ##
 ####################
 for (P_var in soil_properties){
-    p_train <- cbind(p_train, c(1:15)) }
     fit_target <- soil_properties[P_var]
     cat("\n-----------------------------\n")
-    cat("Train for target: ", fit_target, "\n", sep="")      
+    cat("Train for target: ", P_var, "\n", sep="")      
     cat("-----------------------------\n")
     fit_svm <- cv_svm(X_train, Y_train, X_test, log_transform=TRUE, log_const=log_const,fit_method=fit_method,
                   fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers,
-                  fit_target = fit_target, cv_method=cv_method, adaptiveMin=adaptiveMin,
+                  fit_target = P_var, cv_method=cv_method, adaptiveMin=adaptiveMin,
                   tune_Length=tune_Length, plot_it=plot_it)
     fit_all[[P_var]] <- fit_svm[['fit']]
-    p_train <- cbind(p_train, fit_svm[["y_pred"])
+    p_train <- cbind(p_train, fit_svm[["y_pred"]])
     p_test <- cbind(p_test,fit_svm[["y_test"]])
     RMSE_OOB <- cbind(RMSE_OOB, fit_svm[["RMSE_OOB"]])
 }

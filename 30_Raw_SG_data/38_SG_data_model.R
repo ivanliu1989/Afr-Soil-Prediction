@@ -105,12 +105,15 @@ submit$Ca <- Ca
 submit$P <- P
 submit$pH <- pH
 submit$SOC <- SOC
-write.csv(submit, 'submission_new/2014101703_Savitzky-Golay.csv', row.names=F)
-save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014101703_Savitzky-Golay.RData')
+write.csv(submit, 'submission_new/2014102003_Ivanliu1989_P.csv', row.names=F)
+save(fit_Sand,fit_pH,fit_Ca,fit_P,fit_SOC, file='models/2014102001_Ivanliu1989.RData')
 
 dim(test_SG)
 plot(as.matrix(test_SG)[1,-c(1,3555:3570)])
 plot(as.matrix(train_SG)[1,-c(1:5,3559:3574)])
 
-
-
+rmse(submit$Ca, Ca)
+rmse(submit$P, P)
+rmse(submit$pH, pH)
+rmse(submit$Sand, Sand)
+rmse(submit$SOC, SOC)
