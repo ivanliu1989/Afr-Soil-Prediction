@@ -3,6 +3,7 @@
 #######################
 setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
 setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 rm(list=ls(all=TRUE));gc(reset=TRUE);par(mfrow=c(1,1))
 # require(randomForest);require(gbm);require(extraTrees);
 require(data.table);require(bit64);require(foreach);require(reshape)
@@ -11,7 +12,7 @@ require(caret); require(hydroGOF); require(parcor); require(prospectr)
 ########################
 ## Load Data Function ##
 ########################
-load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
+load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
     df_train <- as.data.frame(fread("./data/training.csv"))
     df_test <- as.data.frame(fread("./data/sorted_test.csv"))
     df_test_PIDN <- df_test$PIDN
@@ -29,7 +30,7 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
 
     # take the Savitzky Golay to smoothe out the measurement noise
     # training data
-    if(SavitzkyGolay==TRUE){
+    if(method=="SavitzkyGolay"){
         MIR_DER1_order1 <- savitzkyGolay(df_train[, 2:2655], p = poly, w = windows, m = derivative)
         MIR_DER2_order1 <- savitzkyGolay(df_train[, 2671:3579], p = poly, w = windows, m = derivative)
         X_train <- cbind(MIR_DER1_order1,
@@ -39,15 +40,29 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
              main = 'SavitzkyGolay-Train', col='blue')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
+    }else if(method=="FirstDerivatives"){
+        diff_lag <- derivative
+        diff_order <- derivative
+        MIR_DER1_order1 <- t(diff(t(df_train[, 2:2655]), lag=diff_lag, difference=diff_order))
+        MIR_DER2_order1 <- t(diff(t(df_train[, 2671:3579]), lag=diff_lag, difference=diff_order))
+        X_train <- cbind(MIR_DER1_order1,
+                         MIR_DER2_order1,
+                         df_train[, 3580:3595])
+        plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
+             main = 'FirstDerivatives-Train', col='blue')
+        rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
+        gc(reset=TRUE)
     }else{
         X_train <- df_train[, c(2:2655,2671:3595)]
+        plot(as.matrix(X_train)[100,1:3563], type='l',
+             main = 'Raw-Data-Train', col='blue')
     }
     X_train$PIDN <- as.character(df_train$PIDN)
     X_train$Depth <- as.factor(X_train$Depth)
     Y_train <- df_train[, labels]
     
     # testing data
-    if(SavitzkyGolay==TRUE){
+    if(method=="SavitzkyGolay"){
         MIR_DER1_order1 <- savitzkyGolay(df_test[, 2:2655], p = poly, w = windows, m = derivative)
         MIR_DER2_order1 <- savitzkyGolay(df_test[, 2671:3579], p = poly, w = windows, m = derivative)
         X_test <- cbind(MIR_DER1_order1,
@@ -57,8 +72,22 @@ load_data <- function(SavitzkyGolay=TRUE, derivative=1, windows=11, poly=3){
              main = 'SavitzkyGolay-Test', col='red')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
+    }else if(method=="FirstDerivatives"){
+        diff_lag <- derivative
+        diff_order <- derivative
+        MIR_DER1_order1 <- t(diff(t(df_test[, 2:2655]), lag=diff_lag, difference=diff_order))
+        MIR_DER2_order1 <- t(diff(t(df_test[, 2671:3579]), lag=diff_lag, difference=diff_order))
+        X_test <- cbind(MIR_DER1_order1,
+                        MIR_DER2_order1,
+                        df_test[, 3580:3595])
+        plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
+             main = 'FirstDerivatives-Test', col='red')
+        rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
+        gc(reset=TRUE)
     }else{
         X_test <- df_test[, c(2:2655,2671:3595)]
+        plot(as.matrix(X_test)[100,1:3563], type='l',
+             main = 'Raw-Data-Test', col='blue')
     }
     X_test$PIDN <- as.character(df_test$PIDN)
     X_test$Depth <- as.factor(X_test$Depth)
@@ -243,14 +272,16 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB, fit=fit))
 }
 
-###############################################################################################################
+################################## I am a ##########################################
+################################ break line :)######################################
 
 ######################
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-SavitzkyGolay<-TRUE; derivative<-2; windows<-11; poly<-3
-data <- load_data(SavitzkyGolay, derivative, windows, poly)
+method<-"FirstDerivatives"; # SavitzkyGolay/FirstDerivatives/NULL
+derivative<-1; windows<-11; poly<-3
+data <- load_data(method, derivative, windows, poly)
 X_train <- data[["X_train"]]
 Y_train <- data[["Y_train"]]
 X_test <- data[["X_test"]]
@@ -304,6 +335,7 @@ RMSE_OOB <- c()
 ## Model Training ##
 ####################
 for (P_var in soil_properties){
+    # P_var <- 'P'
     fit_target <- soil_properties[P_var]
     cat("\n-----------------------------\n")
     cat("Train for target: ", P_var, "\n", sep="")      
@@ -330,7 +362,7 @@ fileName <- paste(
     "[cv_repeats_", cv_repeats, "]_",
     "[cv_numbers_", cv_numbers, "]_",
     "[cv_method_", cv_method, "]_",
-    now(),
+    "[timestamp_", Sys.Date(), "]",
     ".csv", sep="")
 
 write.csv(p_test, fileName, row.names=FALSE)
