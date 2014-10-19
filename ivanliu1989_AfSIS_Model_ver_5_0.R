@@ -164,9 +164,9 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
 ######################
 ## Model Preparison ##
 ######################
-bagging_gbm <- function(X_train, Y_train, X_test, log_transform, log_const,
-                        bagging_iterations=10, bootstrap_method="row", bootstrap_replace=TRUE,
-                        bootstrap_ratio=1.0, feat_ratio=1.0, seed=1234, plot.it=TRUE){
+# bagging_gbm <- function(X_train, Y_train, X_test, log_transform, log_const,
+#                         bagging_iterations=10, bootstrap_method="row", bootstrap_replace=TRUE,
+#                         bootstrap_ratio=1.0, feat_ratio=1.0, seed=1234, plot.it=TRUE){}
 
 
 

@@ -48,12 +48,12 @@ seeds <- vector(mode = "list", length = 121)
 for(i in 1:120) seeds[[i]] <- sample.int(1000, 21)
 seeds[[121]] <- sample.int(1000, 1)
 ### Model prepare ###
-fitControl <- trainControl(method="adaptive_cv", number=10, repeats=10,
+fitControl <- trainControl(method="adaptive_cv", number=10, repeats=5,
                            summaryFunction = defaultSummary,
                            returnResamp = "all", selectionFunction = "best",
                            adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=seeds)
 ### Model_Sand ###
-fit_Sand <- train(Sand~.,data=train_Sand, method='svmRadial',trControl = fitControl,
+fit_Sand <- train(x=X_train,y=Y_train$Sand, method='svmRadial',trControl = fitControl,
                   tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
 fit_Sand_2 <- train(Sand~.,data=train_Sand2, method='svmRadial',trControl = fitControl,
                     tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
