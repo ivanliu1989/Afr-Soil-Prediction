@@ -240,7 +240,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     }
     
     # return prediction
-    return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB))
+    return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB, fit=fit))
 }
 
 
@@ -285,8 +285,7 @@ names(log_const) <- soil_properties
 #########################
 ## Model Configuration ##
 #########################
-fit_target <- 'P'
-log_transform[fit_target];log_const
+# log_transform[fit_target];log_const
 fit_method <- 'svmRadial'
 fit_metric <- 'RMSE' 
 cv_repeats <- 10
@@ -295,7 +294,57 @@ cv_method <- 'location' # row, location
 adaptiveMin <- 9
 tune_Length <- 10
 plot_it <- TRUE
-fit_P <- cv_svm(X_train, Y_train, X_test, log_transform=TRUE, log_const=log_const,fit_method=fit_method,
-                fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers, 
-                fit_target = fit_target, cv_method=cv_method, adaptiveMin=adaptiveMin, 
-                tune_Length=tune_Length, plot_it=plot_it)
+
+####################
+## Model Training ##
+####################
+for (P_var in soil_propeties){
+    fit_target <- soil_properties[P_var]
+    cat("\n-----------------------------\n")
+    cat("Train for target: ", fit_target, "\n", sep="")      
+    cat("-----------------------------\n")
+    fit_svm <- cv_svm(X_train, Y_train, X_test, log_transform=TRUE, log_const=log_const,fit_method=fit_method,
+                  fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers,
+                  fit_target = fit_target, cv_method=cv_method, adaptiveMin=adaptiveMin,
+                  tune_Length=tune_Length, plot_it=plot_it)
+    fit_all[P_var] <- fit_svm[['fit']]
+    p_train[P_var] <- fit_svm[["y_pred"]]
+    p_test[P_var] <- fit_svm[["y_test"]]
+    RMSE_OOB[P_var] <- fit_svm[["RMSE_OOB"]]
+}
+p_test
+p_train
+RMSE_OOB
+
+#####################
+## Save submission ##
+#####################
+fileName <- paste(
+    "./submission_last/svmRadial_",
+    "[fit_method_", fit_method, "]_",
+    "[cv_repeats_", cv_repeats, "]_",
+    "[cv_numbers_", cv_numbers, "]_",
+    "[cv_method_", cv_method, "]_",
+    now(),
+    ".csv", sep="")
+
+write.csv(p_test, fileName, row.names=FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
