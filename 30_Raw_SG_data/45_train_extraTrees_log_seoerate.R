@@ -454,7 +454,7 @@ for(ntree in ntrees){
         #####################
         if(which_model == "gbm"){
             fileName <- paste(
-                "./Submission/gbm/gbm_",
+                "./submission_last/gbm/gbm_",
                 "[Diff", diff, "]_",
                 "[Bootstrap_", bootstrap_method, "]_",
                 "[Bagging", bagging_iterations, "]_",
@@ -467,7 +467,7 @@ for(ntree in ntrees){
                 ".csv", sep="")
         }else if(which_model == "extraTrees"){
             fileName <- paste(
-                "./Submission/extraTrees/extraTrees_",
+                "./submission_last/extraTrees/extraTrees_",
                 "[Diff", diff, "]_",
                 "[Bootstrap_", bootstrap_method, "]_",
                 "[Bagging", bagging_iterations, "]_",
