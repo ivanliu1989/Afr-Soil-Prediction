@@ -13,6 +13,7 @@ require(caret); require(hydroGOF); require(parcor); require(prospectr)
 ## Load Data Function ##
 ########################
 load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
+    
     df_train <- as.data.frame(fread("./data/training.csv"))
     df_test <- as.data.frame(fread("./data/sorted_test.csv"))
     df_test_PIDN <- df_test$PIDN
@@ -101,6 +102,7 @@ load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
 ## Preprocess Data Function ##
 ##############################
 preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
+    
     if(flag){
         location <- c('BSAN', 'BSAS', 'BSAV', 'CTI', 'ELEV', 'EVI', 'LSTD', 'LSTN',
                       'REF1', 'REF2', 'REF3', 'REF7', 'RELI', 'TMAP', 'TMFI', 'Depth')
@@ -186,7 +188,6 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
         X_train <- X_train[,-which(names(X_train) == "PIDN")]
         X_test <- X_test[,-which(names(X_test) == "PIDN")]
     }
-    
     return(list(X_train=X_train, X_test=X_test))
 }
 
@@ -233,14 +234,17 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
         }
     
     # fit.control
-    fitControl <- trainControl(method="adaptive_cv", index = trainInd, summaryFunction = defaultSummary,
-                               returnResamp = "all", selectionFunction = "best",
-                               adaptive=list(min=adaptiveMin,alpha=.05,method=adaptiveMethod,complete=T),
+    fitControl <- trainControl(method="adaptive_cv", index = trainInd, 
+                               summaryFunction = defaultSummary, returnResamp = "all", 
+                               selectionFunction = "best", 
+                               adaptive=list(min=adaptiveMin, alpha=.05,
+                                             method=adaptiveMethod,complete=T),
                                seeds=NULL, allowParallel=TRUE)
     
     # train svm  
     fit <- train(x=X_train,y=Y_train2, method=fit_method,trControl = fitControl,
-                 tuneLength=tune_Length,verbose=T,metric=fit_metric,preProc = c('center', 'scale'))
+                 tuneLength=tune_Length,verbose=T,metric=fit_metric,
+                 preProc = c('center', 'scale'))
     
     # make prediction
     y_pred <- predict(fit, newdata = X_train, type='response')
@@ -264,13 +268,14 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
              xlab="observed", ylab="predicted")
         abline(0, 1, col="darkgrey", lty=2)
         res <- y_true_oob - y_pred_oob
-        plot(y_pred_oob, res,
-             xlab="predicted", ylab="residuals")
+        plot(y_pred_oob, res, xlab="predicted", ylab="residuals")
         abline(h=0, col="darkgrey", lty=2)
     }
     
     # return prediction
     return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB, fit=fit))
+    #
+    print()
 }
 
 ################################## I am a #####################################################
@@ -280,8 +285,10 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"FirstDerivatives"; # SavitzkyGolay/FirstDerivatives/NULL
-derivative<-1; windows<-11; poly<-3
+method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+derivative<-1
+windows<-11
+poly<-3
 data <- load_data(method, derivative, windows, poly)
 X_train <- data[["X_train"]]
 Y_train <- data[["Y_train"]]
@@ -325,13 +332,10 @@ cv_repeats <- 10
 cv_numbers <- 10
 cv_method <- 'location' # row, location
 adaptiveMin <- 9
-tune_Length <- 10
+tune_Length <- 16
 plot_it <- TRUE
 adaptiveMethod <- 'BT' # BT/gls
-p_train <- c()
-fit_all <-list()
-p_test <- c()
-RMSE_OOB <- c()
+p_train <- c(); fit_all <-list(); p_test <- c(); RMSE_OOB <- c()
 
 ####################
 ## Model Training ##
@@ -342,18 +346,19 @@ for (P_var in soil_properties){
     cat("\n-----------------------------\n")
     cat("Train for target: ", P_var, "\n", sep="")      
     cat("-----------------------------\n")
-    fit_svm <- cv_svm(X_train, Y_train, X_test, log_transform=TRUE, log_const=log_const,fit_method=fit_method,
-                  fit_metric=fit_metric, cv_repeats=cv_repeats, cv_numbers=cv_numbers,
-                  fit_target = P_var, cv_method=cv_method, adaptiveMin=adaptiveMin,
-                  tune_Length=tune_Length, plot_it=plot_it, adaptiveMethod=adaptiveMethod)
+    fit_svm <- cv_svm(X_train, Y_train, X_test, log_transform=log_transform[P_var], 
+                      log_const=log_const, fit_method=fit_method, fit_metric=fit_metric, 
+                      cv_repeats=cv_repeats, cv_numbers=cv_numbers, fit_target = P_var, 
+                      cv_method=cv_method, adaptiveMin=adaptiveMin, tune_Length=tune_Length, 
+                      plot_it=plot_it, adaptiveMethod=adaptiveMethod)
     fit_all[[P_var]] <- fit_svm[['fit']]
     p_train <- cbind(p_train, fit_svm[["y_pred"]])
     p_test <- cbind(p_test,fit_svm[["y_test"]])
     RMSE_OOB <- cbind(RMSE_OOB, fit_svm[["RMSE_OOB"]])
 }
-p_test
-p_train
-RMSE_OOB
+names(p_test) <- soil_properties
+names(p_train) <- soil_properties
+names(RMSE_OOB) <- soil_properties
 
 #####################
 ## Save submission ##
