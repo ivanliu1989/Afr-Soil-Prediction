@@ -198,6 +198,17 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
                    fit_metric='RMSE', cv_repeats=10, cv_numbers=10, fit_target,cv_method="row", 
                    adaptiveMin=10, tune_Length=10, plot_it=TRUE, adaptiveMethod = 'BT'){
     
+    # message
+    msg <- paste('[Target:',fit_target,'],',
+                 '[Log_Transform:',log_transform,'],',
+                 '[Log_Const:',log_const,'],',
+                 '[Fit_Method:',fit_method,'],',
+                 '[CV:',cv_repeats,'/',cv_numbers,'],',
+                 '[CV_Method:',cv_method,']',
+                 sep='')
+    print(msg)
+    
+    # prepare
     location <- c('BSAN', 'BSAS', 'BSAV', 'CTI', 'ELEV', 'EVI', 'LSTD', 'LSTN',
                   'REF1', 'REF2', 'REF3', 'REF7', 'RELI', 'TMAP', 'TMFI')
     LOC_train <- apply(X_train[,location], 1, function(x)paste(x,collapse="_"))
@@ -274,8 +285,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     
     # return prediction
     return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB, fit=fit))
-    #
-    print()
+    
 }
 
 ################################## I am a #####################################################
