@@ -161,9 +161,23 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
     return(list(X_train=X_train, X_test=X_test))
 }
 
-#########################
-## Model Configuration ##
-#########################
+######################
+## Model Preparison ##
+######################
+bagging_gbm <- function(X_train, Y_train, X_test, log_transform, log_const,
+                        bagging_iterations=10, bootstrap_method="row", bootstrap_replace=TRUE,
+                        bootstrap_ratio=1.0, feat_ratio=1.0, seed=1234, plot.it=TRUE){
+
+
+
+
+
+
+
+
+######################
+## Model Preparison ##
+######################
 ## load original (diff) data
 SavitzkyGolay<-TRUE; derivative<-1; windows<-11; poly<-3
 data <- load_data(SavitzkyGolay, derivative, windows, poly)
@@ -172,3 +186,33 @@ Y_train <- data[["Y_train"]]
 X_test <- data[["X_test"]]
 PIDN_test <- data[["PIDN_test"]]
 soil_properties <- c("Ca", "P", "pH", "SOC", "Sand")
+
+## generate pair data
+data <- preprocess_data(X_train, X_test, FALSE)
+X_train <- data[["X_train"]]
+X_test <- data[["X_test"]]
+# X_train$Depth <- ifelse(X_train$Depth=='Topsoil', 0, 1)
+# X_test$Depth <- ifelse(X_test$Depth=='Topsoil', 0, 1)
+predictors <- names(X_train)
+rm(list=c("data"))
+gc(reset=TRUE)
+
+########################
+## Log transformation ##
+########################
+log_const <- c(
+    -min(Y_train$Ca)+1e-3,
+    -min(Y_train$P)+1e-3,
+    -min(Y_train$pH)+1e-2,
+    -min(Y_train$SOC)+1e-3,
+    -min(Y_train$Sand)+1e-2
+)
+# log transform only helpful for P
+log_transform <- c(FALSE, TRUE, FALSE, FALSE, FALSE)
+# log_transform <- rep(TRUE, length(soil_properties))
+names(log_transform) <- soil_properties
+names(log_const) <- soil_properties
+
+#########################
+## Model Configuration ##
+#########################
