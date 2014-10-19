@@ -235,7 +235,8 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     # fit.control
     fitControl <- trainControl(method="adaptive_cv", index = trainInd, summaryFunction = defaultSummary,
                                returnResamp = "all", selectionFunction = "best",
-                               adaptive=list(min=adaptiveMin,alpha=.05,method='gls',complete=T))#,seeds=seeds)
+                               adaptive=list(min=adaptiveMin,alpha=.05,method='gls',complete=T),
+                               seeds=NULL, allowParallel=TRUE)
     
     # train svm  
     fit <- train(x=X_train,y=Y_train2, method=fit_method,trControl = fitControl,
@@ -272,8 +273,8 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     return(list(y_pred=y_pred, y_test=y_test, RMSE_OOB=RMSE_OOB, fit=fit))
 }
 
-################################## I am a ##########################################
-################################ break line :)######################################
+################################## I am a #####################################################
+################################ break line :)#################################################
 
 ######################
 ## Model Preparison ##
