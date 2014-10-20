@@ -297,7 +297,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+method<-"none"; # SavitzkyGolay / FirstDerivatives / NULL
 derivative<-2
 windows<-5
 poly<-3
@@ -342,7 +342,7 @@ fit_method <- 'svmRadial'
 fit_metric <- 'RMSE' 
 cv_repeats <- 10
 cv_numbers <- 10
-cv_method <- 'location' # row, location
+cv_method <- 'row' # row, location
 adaptiveMin <- 9
 tune_Length <- 16
 plot_it <- TRUE
