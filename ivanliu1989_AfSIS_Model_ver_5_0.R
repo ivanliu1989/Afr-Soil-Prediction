@@ -201,7 +201,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     # message
     msg <- paste('[Target:',fit_target,'],',
                  '[Log_Transform:',log_transform,'],',
-                 '[Log_Const:',log_const,'],',
+                 '[Log_Const:',log_const[fit_target],'],',
                  '[Fit_Method:',fit_method,'],',
                  '[CV:',cv_repeats,'/',cv_numbers,'],',
                  '[CV_Method:',cv_method,']',
@@ -245,9 +245,9 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
         }
     
     # fit.control
-    fitControl <- trainControl(method="adaptive_cv", index = trainInd, 
-                               summaryFunction = defaultSummary, returnResamp = "all", 
-                               selectionFunction = "best", 
+    fitControl <- trainControl(method="adaptive_cv", index = trainInd, number=cv_numbers, 
+                               repeats=cv_repeats, summaryFunction = defaultSummary, 
+                               returnResamp = "all", selectionFunction = "best", 
                                adaptive=list(min=adaptiveMin, alpha=.05,
                                              method=adaptiveMethod,complete=T),
                                seeds=NULL, allowParallel=TRUE)
@@ -258,8 +258,8 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
                  preProc = c('center', 'scale'))
     
     # make prediction
-    y_pred <- predict(fit, newdata = X_train, type='response')
-    y_test <- predict(fit, newdata = X_test, type='response')
+    y_pred <- predict(fit, newdata = X_train)
+    y_test <- predict(fit, newdata = X_test)
     
     # invert log transform
     if(log_transform){      
@@ -382,7 +382,18 @@ fileName <- paste(
     "[timestamp_", Sys.Date(), "]",
     ".csv", sep="")
 
-write.csv(p_test, fileName, row.names=FALSE)
+write.csv(submit, fileName, row.names=FALSE)
 
-
+### Test ###
+trainInd <- createMultiFolds(Y_train[,'P'],k=10, times=10);
+fitControl <- trainControl(method='adaptive_cv', index=trainInd, number=10, repeats=10,
+                           summaryFunction = defaultSummary,
+                           returnResamp = "all", selectionFunction = "best",
+                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=NULL)
+fit_P <- train(x=X_train,y=Y_train$P, method='svmRadial',trControl = fitControl,
+               tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
+submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
+head(submit$P); head(p_test)
+submit$P <- p_test
+head(submit)
 
