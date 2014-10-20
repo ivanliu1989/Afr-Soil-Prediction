@@ -297,8 +297,8 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"none"; # SavitzkyGolay / FirstDerivatives / NULL
-derivative<-1
+method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+derivative<-2
 windows<-5
 poly<-3
 data <- load_data(method, derivative, windows, poly)
@@ -397,7 +397,16 @@ fileName <- paste(
     "[cv_method_", cv_method, "]_",
     "[timestamp_", Sys.Date(), "]",
     ".csv", sep="")
+modelName <- paste(
+    "./submission_last/svmRadial_",
+    "[feature_engineer_", method, "]_",
+    "[fit_method_", fit_method, "]_",
+    "[cv_repeats_", cv_repeats, "]_",
+    "[cv_numbers_", cv_numbers, "]_",
+    "[cv_method_", cv_method, "]_",
+    "[timestamp_", Sys.Date(), "]",
+    ".RData", sep="")
 
 write.csv(submit_df, fileName, row.names=FALSE)
-
+save('fit_all', file=modelName)
 
