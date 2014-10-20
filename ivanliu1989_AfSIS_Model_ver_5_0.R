@@ -297,8 +297,8 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"none"; # SavitzkyGolay / FirstDerivatives / NULL
-derivative<-2
+method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+derivative<-1
 windows<-5
 poly<-3
 data <- load_data(method, derivative, windows, poly)
