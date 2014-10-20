@@ -38,7 +38,8 @@ load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
                          MIR_DER2_order1,
                          df_train[, 3580:3595])
         plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
-             main = 'SavitzkyGolay-Train', col='blue')
+             main = paste('SavitzkyGolay-Train-','poly:',poly,'windows:',windows,
+                          'derivative:',derivative,sep=""), col='blue')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
     }else if(method=="FirstDerivatives"){
@@ -50,7 +51,7 @@ load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
                          MIR_DER2_order1,
                          df_train[, 3580:3595])
         plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
-             main = 'FirstDerivatives-Train', col='blue')
+             main = paste(derivative,'Derivatives-Train',sep=" "), col='blue')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
     }else{
@@ -70,7 +71,8 @@ load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
                         MIR_DER2_order1,
                         df_test[, 3580:3595])
         plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
-             main = 'SavitzkyGolay-Test', col='red')
+             main = paste('SavitzkyGolay-Test-','poly:',poly,'windows:',windows,
+                          'derivative:',derivative,sep=""), col='red')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
     }else if(method=="FirstDerivatives"){
@@ -82,7 +84,7 @@ load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
                         MIR_DER2_order1,
                         df_test[, 3580:3595])
         plot(as.matrix(cbind(MIR_DER1_order1,MIR_DER2_order1))[100,], type='l',
-             main = 'FirstDerivatives-Test', col='red')
+             main = paste(derivative,'Derivatives-Test',sep=" "), col='red')
         rm(list=c("MIR_DER1_order1","MIR_DER2_order1"))
         gc(reset=TRUE)
     }else{
@@ -295,9 +297,9 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+method<-"SavitzkyGolay"; # SavitzkyGolay / FirstDerivatives / NULL
 derivative<-1
-windows<-11
+windows<-5
 poly<-3
 data <- load_data(method, derivative, windows, poly)
 X_train <- data[["X_train"]]
