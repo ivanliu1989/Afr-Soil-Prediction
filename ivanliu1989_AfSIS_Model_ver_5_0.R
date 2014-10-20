@@ -240,7 +240,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
     # Cross validation
     if(cv_method=="row"){
         # sample row index
-        trainInd <- createMultiFolds(Y_train[,target],k=cv_numbers, times=cv_repeats);
+        trainInd <- createMultiFolds(Y_train[,fit_target],k=cv_numbers, times=cv_repeats);
     }else if(cv_method=="location"){
         # sample location index
         trainInd <- createMultiFolds(LOC_train,k=cv_numbers, times=cv_repeats);
