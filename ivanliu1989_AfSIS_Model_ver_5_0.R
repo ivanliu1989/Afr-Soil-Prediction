@@ -114,12 +114,12 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
         m_predictors <- NULL
         for(p in names(df)){
             if(substr(p, 1, 1)=="m"){
-                m_predictors <- c(m_predictors, p) # reflectance columns
+                m_predictors <- c(m_predictors, p) # spectrum columns
             }
         }
-        predictors_top <- paste("t_", names(Topsoil)[names(Topsoil) %in% m_predictors], sep='') # top reflectance predictors
+        predictors_top <- paste("t_", names(Topsoil)[names(Topsoil) %in% m_predictors], sep='') # top spectrum predictors
         names(Topsoil)[names(Topsoil) %in% m_predictors] <- predictors_top
-        predictors_sub <- paste("s_", names(Subsoil)[names(Subsoil) %in% m_predictors], sep='') # sub reflectance predictors
+        predictors_sub <- paste("s_", names(Subsoil)[names(Subsoil) %in% m_predictors], sep='') # sub spectrum predictors
         names(Subsoil)[names(Subsoil) %in% m_predictors]<- predictors_sub
         
         names(Subsoil)[names(Subsoil)=="PIDN"] <- "PIDN2"
