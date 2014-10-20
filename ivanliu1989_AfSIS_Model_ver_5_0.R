@@ -368,9 +368,22 @@ for (P_var in soil_properties){
     p_test <- cbind(p_test,fit_svm[["y_test"]])
     RMSE_OOB <- cbind(RMSE_OOB, fit_svm[["RMSE_OOB"]])
 }
-names(p_test) <- soil_properties
-names(p_train) <- soil_properties
-names(RMSE_OOB) <- soil_properties
+p_test_df <- as.data.frame(p_test)
+names(p_test_df) <- soil_properties
+head(p_test_df)
+submit_df <- cbind(PIDN_test, p_test_df)
+
+p_train_df <- as.data.frame(p_train)
+names(p_train_df) <- soil_properties
+head(p_train_df)
+
+RMSE_OOB_df <- as.data.frame(RMSE_OOB)
+names(RMSE_OOB_df) <- soil_properties
+RMSE_OOB_df
+
+submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
+head(submit); head(submit_df)
+
 
 #####################
 ## Save submission ##
@@ -385,18 +398,6 @@ fileName <- paste(
     "[timestamp_", Sys.Date(), "]",
     ".csv", sep="")
 
-write.csv(submit, fileName, row.names=FALSE)
+write.csv(submit_df, fileName, row.names=FALSE)
 
-### Test ###
-trainInd <- createMultiFolds(Y_train[,'P'],k=10, times=10);
-fitControl <- trainControl(method='adaptive_cv', index=trainInd, number=10, repeats=10,
-                           summaryFunction = defaultSummary,
-                           returnResamp = "all", selectionFunction = "best",
-                           adaptive=list(min=12,alpha=.05,method='gls',complete=T),seeds=NULL)
-fit_P <- train(x=X_train,y=Y_train$P, method='svmRadial',trControl = fitControl,
-               tuneLength=16,verbose=T,metric='RMSE',preProc = c('center', 'scale'))
-submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
-head(submit$P); head(p_test)
-submit$P <- p_test
-head(submit)
 
