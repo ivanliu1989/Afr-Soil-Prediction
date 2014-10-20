@@ -375,6 +375,7 @@ names(RMSE_OOB) <- soil_properties
 #####################
 fileName <- paste(
     "./submission_last/svmRadial_",
+    "[feature_engineer_", method, "]_",
     "[fit_method_", fit_method, "]_",
     "[cv_repeats_", cv_repeats, "]_",
     "[cv_numbers_", cv_numbers, "]_",
