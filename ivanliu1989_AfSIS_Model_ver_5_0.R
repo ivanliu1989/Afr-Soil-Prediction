@@ -276,12 +276,12 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
         RMSE_OOB <- rmse(y_true_oob, y_pred_oob)
         par(mfrow=c(1,2))
         axisRange <- extendrange(c(y_true_oob, y_pred_oob))
-        plot(y_true_oob, y_pred_oob,
+        plot(y_true_oob, y_pred_oob, main=fit_target,
              xlim = axisRange, ylim = axisRange,
              xlab="observed", ylab="predicted")
         abline(0, 1, col="darkgrey", lty=2)
         res <- y_true_oob - y_pred_oob
-        plot(y_pred_oob, res, xlab="predicted", ylab="residuals")
+        plot(y_pred_oob, res, xlab="predicted", ylab="residuals", main=fit_target)
         abline(h=0, col="darkgrey", lty=2)
     }
     
@@ -384,6 +384,11 @@ RMSE_OOB_df
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
 head(submit); head(submit_df)
 
+rmse(submit$Ca, submit_df$Ca)
+rmse(submit$P, submit_df$P)
+rmse(submit$pH, submit_df$pH)
+rmse(submit$SOC, submit_df$SOC)
+rmse(submit$Sand, submit_df$Sand)
 
 #####################
 ## Save submission ##
