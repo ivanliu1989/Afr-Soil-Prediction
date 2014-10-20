@@ -90,7 +90,7 @@ load_data <- function(method="SavitzkyGolay", derivative=1, windows=11, poly=3){
     }else{
         X_test <- df_test[, c(2:2655,2671:3595)]
         plot(as.matrix(X_test)[100,1:3563], type='l',
-             main = 'Raw-Data-Test', col='blue')
+             main = 'Raw-Data-Test', col='red')
     }
     X_test$PIDN <- as.character(df_test$PIDN)
     X_test$Depth <- as.factor(X_test$Depth)
@@ -297,7 +297,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"SavitzkyGolay"; # SavitzkyGolay / FirstDerivatives / NULL
+method<-"none"; # SavitzkyGolay / FirstDerivatives / NULL
 derivative<-1
 windows<-5
 poly<-3
