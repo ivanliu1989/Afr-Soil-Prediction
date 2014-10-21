@@ -1,0 +1,17 @@
+Ca - Row / Loc
+P - Row
+pH - Loc
+SOC - Loc
+Sand - Row / Loc
+
+Ca - FD / SG 
+P - FD
+pH - FD / SG
+Sand - SG
+SOC - FD / SG
+
+Ca - SG / Row
+P - FD / Row / log
+pH - SG / Loc 
+SOC - SG / Loc
+Sand - SG / Row
