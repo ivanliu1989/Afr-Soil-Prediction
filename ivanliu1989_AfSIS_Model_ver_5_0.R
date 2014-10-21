@@ -342,7 +342,7 @@ fit_method <- 'svmRadial'
 fit_metric <- 'RMSE' 
 cv_repeats <- 10
 cv_numbers <- 10
-cv_method <- 'row' # row, location
+cv_method <- 'location' # row, location
 adaptiveMin <- 16
 tune_Length <- 16
 plot_it <- TRUE
