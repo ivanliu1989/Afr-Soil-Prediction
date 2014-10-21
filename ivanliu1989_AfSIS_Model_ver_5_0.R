@@ -394,22 +394,20 @@ rmse(submit$Sand, submit_df$Sand)
 ## Save submission ##
 #####################
 fileName <- paste(
-    "./submission_last/svmRadial_",
-    "[feature_engineer_", method, "]_",
+    "./submission_last/",Sys.Date(),
+    "_[feature_engineer_", method, "]_",
     "[fit_method_", fit_method, "]_",
     "[cv_repeats_", cv_repeats, "]_",
     "[cv_numbers_", cv_numbers, "]_",
-    "[cv_method_", cv_method, "]_",
-    "[timestamp_", Sys.Date(), "]",
+    "[cv_method_", cv_method, "]_TFTTT",
     ".csv", sep="")
 modelName <- paste(
-    "./submission_last/svmRadial_",
-    "[feature_engineer_", method, "]_",
+    "./submission_last/",Sys.Date(),
+    "_[feature_engineer_", method, "]_",
     "[fit_method_", fit_method, "]_",
     "[cv_repeats_", cv_repeats, "]_",
     "[cv_numbers_", cv_numbers, "]_",
-    "[cv_method_", cv_method, "]_",
-    "[timestamp_", Sys.Date(), "]",
+    "[cv_method_", cv_method, "]_TFTTT",
     ".RData", sep="")
 
 write.csv(submit_df, fileName, row.names=FALSE)
