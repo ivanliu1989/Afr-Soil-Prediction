@@ -196,9 +196,9 @@ preprocess_data <- function(dfTrain, dfTest, flag=TRUE){
 ######################
 ## Model Preparison ##
 ######################
-cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_method='svmRadial', 
-                   fit_metric='RMSE', cv_repeats=10, cv_numbers=10, fit_target,cv_method="row", 
-                   adaptiveMin=10, tune_Length=10, plot_it=TRUE, adaptiveMethod = 'BT'){
+cv_svm <- function(X_train, Y_train, X_test, log_transform, log_const,fit_method, 
+                   fit_metric='RMSE', cv_repeats, cv_numbers, fit_target,cv_method, 
+                   adaptiveMin, tune_Length, plot_it, adaptiveMethod){
     
     # message
     msg <- paste('[Target:',fit_target,'],',
@@ -247,7 +247,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
         }
     
     # fit.control
-    fitControl <- trainControl(method="adaptive_cv", number=cv_numbers, 
+    fitControl <- trainControl(method="adaptive_cv", index=trainInd, number=cv_numbers, 
                                repeats=cv_repeats, summaryFunction = defaultSummary, 
                                returnResamp = "all", selectionFunction = "best", 
                                adaptive=list(min=adaptiveMin, alpha=.05,
@@ -297,7 +297,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+method<-"SavitzkyGolay"; # SavitzkyGolay / FirstDerivatives / NULL
 derivative<-1
 windows<-11
 poly<-3
@@ -324,9 +324,9 @@ gc(reset=TRUE)
 log_const <- c(
     -min(Y_train$Ca)+1e-3,
     -min(Y_train$P)+1e-3,
-    -min(Y_train$pH)+1e-2,
+    -min(Y_train$pH)+1e-3,
     -min(Y_train$SOC)+1e-3,
-    -min(Y_train$Sand)+1e-2
+    -min(Y_train$Sand)+1e-3
 )
 # log transform only helpful for P
 log_transform <- c(FALSE, TRUE, FALSE, FALSE, FALSE)
@@ -352,6 +352,7 @@ p_train <- c(); fit_all <-list(); p_test <- c(); RMSE_OOB <- c()
 ####################
 ## Model Training ##
 ####################
+# soil_properties_1 <- c('Ca', 'Sand')
 for (P_var in soil_properties){
     # P_var <- 'Ca'
     fit_target <- soil_properties[P_var]
@@ -382,7 +383,7 @@ names(RMSE_OOB_df) <- soil_properties
 RMSE_OOB_df
 
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
-head(submit); head(submit_df)
+head(submit$P); head(p_test)
 
 rmse(submit$Ca, submit_df$Ca)
 rmse(submit$P, submit_df$P)
