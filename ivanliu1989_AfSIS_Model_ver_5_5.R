@@ -1,26 +1,18 @@
-#2 Ca - SG / Row
-#1 P - FD / Row / log
-#3 pH - SG / Loc 
-#3 SOC - SG / Loc
-#2 Sand - SG / Row
-
-# P => Ca, Sand => pH, SOC
-
-P <- p_test_df[,1]
-Ca <- p_test_df[,2]
-Sand <- p_test_df[,3]
-pH <- p_test_df[,4]
-SOC <- p_test_df[,5]
-
 submit <- read.csv('submission_new/11OCT_2.csv', sep=',')
-submit_df <- submit 
-submit_df$Ca <- Ca
-submit_df$P <- P
-submit_df$pH <- pH
-submit_df$SOC <- SOC
-submit_df$Sand <- Sand
+submit_new_row <- read.csv('ivanliu1989_AfSIS_model_submission/2014-10-22_[feature_engineer_SavitzkyGolay]_[fit_method_svmRadial]_[cv_repeats_10]_[cv_numbers_10]_[cv_method_row].csv', sep=',')
+submit_new_loc <- read.csv('ivanliu1989_AfSIS_model_submission/2014-10-22_[feature_engineer_SavitzkyGolay]_[fit_method_svmRadial]_[cv_repeats_10]_[cv_numbers_10]_[cv_method_location].csv', sep=',')
 
-head(submit); head(submit_df)
+head(submit); head(submit_new_row); head(submit_new_loc); 
 
-fileName <- 'C:/Users/Ivan.Liuyanfeng/Desktop/Data_Mining_Work_Space/AfSIS/ivanliu1989_AfSIS_model_submission/ivanliu1989_model_submit.csv'
+submit_df <- submit
+submit_df$Ca <- submit_new_loc$Ca
+submit_df$P <- submit_new_loc$P
+submit_df$pH <- submit_new_row$pH
+submit_df$SOC <- submit_new_loc$SOC
+submit_df$Sand <- submit_new_loc$Sand
+
+submit_df$SOC <- submit$SOC
+head(submit_df)
+
+fileName <- 'ivanliu1989_AfSIS_model_submission/row_loc_submit.csv'
 write.csv(submit_df, fileName, row.names=FALSE)

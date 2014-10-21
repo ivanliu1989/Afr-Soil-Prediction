@@ -3,7 +3,7 @@
 #######################
 setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\AfSIS')
 setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
-setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
+setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction')
 rm(list=ls(all=TRUE));gc(reset=TRUE);par(mfrow=c(1,1))
 # require(randomForest);require(gbm);require(extraTrees);
 require(data.table);require(bit64);require(foreach);require(reshape)
