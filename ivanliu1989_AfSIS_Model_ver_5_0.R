@@ -1,7 +1,7 @@
 #######################
 ## Environment Setup ##
 #######################
-setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\Afr-Soil-Prediction')
+setwd('C:\\Users\\Ivan.Liuyanfeng\\Desktop\\Data_Mining_Work_Space\\AfSIS')
 setwd('H:\\Machine Learning\\Afr-Soil-Prediction')
 setwd('/Users/ivan/Work_directory/Afr-Soil-Prediction-master')
 rm(list=ls(all=TRUE));gc(reset=TRUE);par(mfrow=c(1,1))
@@ -297,7 +297,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"SavitzkyGolay"; # SavitzkyGolay / FirstDerivatives / NULL
+method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
 derivative<-1
 windows<-11
 poly<-3
@@ -353,7 +353,7 @@ p_train <- c(); fit_all <-list(); p_test <- c(); RMSE_OOB <- c()
 ## Model Training ##
 ####################
 for (P_var in soil_properties){
-    # P_var <- 'P'
+    # P_var <- 'Ca'
     fit_target <- soil_properties[P_var]
     cat("\n-----------------------------\n")
     cat("Train for target: ", P_var, "\n", sep="")      
