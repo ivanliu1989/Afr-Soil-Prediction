@@ -297,9 +297,9 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform=TRUE, log_const,fit_m
 ## Model Preparison ##
 ######################
 ## load original (diff) data
-method<-"FirstDerivatives"; # SavitzkyGolay / FirstDerivatives / NULL
+method<-"SavitzkyGolay"; # SavitzkyGolay / FirstDerivatives / NULL
 derivative<-1
-windows<-5
+windows<-11
 poly<-3
 data <- load_data(method, derivative, windows, poly)
 X_train <- data[["X_train"]]
@@ -329,7 +329,7 @@ log_const <- c(
     -min(Y_train$Sand)+1e-2
 )
 # log transform only helpful for P
-log_transform <- c(FALSE, TRUE, FALSE, FALSE, FALSE)
+log_transform <- c(TRUE, FALSE, TRUE, TRUE, TRUE)
 # log_transform <- rep(TRUE, length(soil_properties))
 names(log_transform) <- soil_properties
 names(log_const) <- soil_properties
@@ -346,7 +346,7 @@ cv_method <- 'row' # row, location
 adaptiveMin <- 9
 tune_Length <- 16
 plot_it <- TRUE
-adaptiveMethod <- 'BT' # BT/gls
+adaptiveMethod <- 'gls' # BT/gls
 p_train <- c(); fit_all <-list(); p_test <- c(); RMSE_OOB <- c()
 
 ####################
