@@ -247,8 +247,7 @@ cv_svm <- function(X_train, Y_train, X_test, log_transform, log_const,fit_method
         }
     
     # fit.control
-    fitControl <- trainControl(method="adaptive_cv", index=trainInd, number=cv_numbers, 
-                               repeats=cv_repeats, summaryFunction = defaultSummary, 
+    fitControl <- trainControl(method="adaptive_cv", index=trainInd,  summaryFunction = defaultSummary, 
                                returnResamp = "all", selectionFunction = "best", 
                                adaptive=list(min=adaptiveMin, alpha=.05,
                                              method=adaptiveMethod,complete=T),
@@ -343,7 +342,7 @@ fit_metric <- 'RMSE'
 cv_repeats <- 10
 cv_numbers <- 10
 cv_method <- 'location' # row, location
-adaptiveMin <- 16
+adaptiveMin <- 9
 tune_Length <- 16
 plot_it <- TRUE
 adaptiveMethod <- 'gls' # BT/gls
