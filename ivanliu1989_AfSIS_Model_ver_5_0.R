@@ -329,7 +329,7 @@ log_const <- c(
     -min(Y_train$Sand)+1e-2
 )
 # log transform only helpful for P
-log_transform <- c(TRUE, FALSE, TRUE, TRUE, TRUE)
+log_transform <- c(FALSE, TRUE, FALSE, FALSE, FALSE)
 # log_transform <- rep(TRUE, length(soil_properties))
 names(log_transform) <- soil_properties
 names(log_const) <- soil_properties
