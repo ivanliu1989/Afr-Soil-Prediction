@@ -399,7 +399,7 @@ fileName <- paste(
     "[fit_method_", fit_method, "]_",
     "[cv_repeats_", cv_repeats, "]_",
     "[cv_numbers_", cv_numbers, "]_",
-    "[cv_method_", cv_method, "]_TFTTT",
+    "[cv_method_", cv_method, "]",
     ".csv", sep="")
 modelName <- paste(
     "./submission_last/",Sys.Date(),
@@ -407,7 +407,7 @@ modelName <- paste(
     "[fit_method_", fit_method, "]_",
     "[cv_repeats_", cv_repeats, "]_",
     "[cv_numbers_", cv_numbers, "]_",
-    "[cv_method_", cv_method, "]_TFTTT",
+    "[cv_method_", cv_method, "]",
     ".RData", sep="")
 
 write.csv(submit_df, fileName, row.names=FALSE)
